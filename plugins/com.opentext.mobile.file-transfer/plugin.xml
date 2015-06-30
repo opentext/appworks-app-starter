@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Licensed to OpenText Inc (c) 2015 -->
+
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    id="com.opentext.mobile.file-transfer"
+    version="0.1.0">
+    <name>File Transfer</name>
+    <description>OpenText Mobile File Transfer Plugin</description>
+    <keywords>opentext,file,transfer</keywords>
+
+    <!-- dependency id="org.apache.cordova.file@1" /-->
+    <dependency id="org.apache.cordova.file" version=">=1.0.1" />
+
+    <js-module src="www/FileTransferError.js" name="FileTransferError">
+        <clobbers target="window.FileTransferError" />
+    </js-module>
+
+    <js-module src="www/FileTransfer.js" name="FileTransfer">
+        <clobbers target="window.FileTransfer" />
+    </js-module>
+
+    <!-- ios -->
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+            <feature name="FileTransfer">
+                <param name="ios-package" value="OTMFileTransfer" />
+            </feature>
+        </config-file>
+        <header-file src="src/ios/OTMFileTransfer.h" />
+        <source-file src="src/ios/OTMFileTransfer.m" />
+
+        <framework src="AssetsLibrary.framework" />
+    </platform>
+</plugin>

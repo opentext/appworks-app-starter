@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <!-- <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" /> -->
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.css" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <title>OpenText Mobile Demo</title>
+    </head>
+
+
+    <body>
+
+        <div class="container-fluid">
+
+            <div class="row text-center">
+                <div class="col-xs-12">
+
+
+                    <div class="logo-wrapper">
+                        <div class="logo"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row text-center" id="begin">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-success" onclick="beginDemo()" >
+                        begin demo
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="storeRequest">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="storeRequest()">
+                        store offline <br> request
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="storeFile">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="storeFile()">
+                        store a file
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="getFile">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="getFileFromStorage()">
+                        retrieve file
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="cacheData">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="setItemInCache()">
+                        cache data
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="getData">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="getItemFromCache()">
+                        retrieve data
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="cacheDataWithOptions">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="setItemInCacheWithOptions()">
+                        cache data <br> with expiry
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="waiting">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary"  disabled>
+                        waiting for <br> data to <br> expire...
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="getDataAfterExpiry">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="getItemFromCache(true)">
+                        retrieve expired <br> data
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="clearCache">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="clearCache()">
+                        clear cache
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="openCamera">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="openCamera()">
+                        open camera
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="openGallery">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-primary" onclick="openGallery()">
+                        open gallery
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="row text-center" id="demoOver">
+                <div class="col-xs-12">
+                    <button class="btn btn-circle btn-xl btn-success"  disabled>
+                        demo complete.
+                    </button>
+                </div>
+            </div>
+            <br>
+
+            <div class="footer row text-center">
+                <div class="" id="deviceready">
+                    <p class="event listening blink">Connecting to Device</p>
+                    <p class="event received">Device is Ready</p>
+                </div>
+            </div>
+        </div>
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="appworks.min.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+    </body>
+</html>
