@@ -269,11 +269,11 @@ exports.defineManualTests = function (contentEl, createActionButton) {
             // TEST STREAMING AUDIO PLAYBACK
             //var src = "http://nunzioweb.com/misc/Bon_Jovi-Crush_Mystery_Train.mp3";   // works
             //var src = "http://nunzioweb.com/misc/Bon_Jovi-Crush_Mystery_Train.m3u"; // doesn't work
-            //var src = "http://www.wav-sounds.com/cartoon/bugsbunny1.wav"; // works
-            //var src = "http://www.angelfire.com/fl5/html-tutorial/a/couldyou.mid"; // doesn't work
+            //var src = "http://www-archive.wav-sounds.com/cartoon/bugsbunny1.wav"; // works
+            //var src = "http://www-archive.angelfire.com/fl5/html-tutorial/a/couldyou.mid"; // doesn't work
             //var src = "MusicSearch/mp3/train.mp3";    // works
             //var src = "bryce.mp3";  // works
-            //var src = "/android_asset/www/bryce.mp3"; // works
+            //var src = "/android_asset/www-archive/bryce.mp3"; // works
 
             media1 = new Media(src,
                     function () {

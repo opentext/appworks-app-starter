@@ -20,7 +20,7 @@
  */
 
 /*
-  Network API overview: http://www.w3.org/TR/netinfo-api/
+  Network API overview: http://www-archive.w3.org/TR/netinfo-api/
   and http://w3c.github.io/netinfo/
 */
 

@@ -20,7 +20,7 @@
  */
 
 /*
-  Network API overview: http://www.w3.org/TR/netinfo-api/
+  Network API overview: http://www-archive.w3.org/TR/netinfo-api/
   and http://w3c.github.io/netinfo/
 */
 
@@ -32,7 +32,7 @@ module.exports = {
         window.navigator.connection.type = Connection.NONE;
 
         var xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://www.google.com', true);
+        xhr.open('GET', 'http://www-archive.google.com', true);
         
         xhr.onload = function() {
             if (xhr.readyState === 4 && xhr.status === 200) {

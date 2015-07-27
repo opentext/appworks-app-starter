@@ -175,8 +175,8 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     var info_div = '<h1>InAppBrowser</h1>' +
         '<div id="info">' +
-        'Make sure http://cordova.apache.org and http://google.co.uk and https://www.google.co.uk are white listed. </br>' +
-        'Make sure http://www.apple.com is not in the white list.</br>' +
+        'Make sure http://cordova.apache.org and http://google.co.uk and https://www-archive.google.co.uk are white listed. </br>' +
+        'Make sure http://www-archive.apple.com is not in the white list.</br>' +
         'In iOS, starred <span style="vertical-align:super">*</span> tests will put the app in a state with no way to return. </br>' +
         '<h4>User-Agent: <span id="user-agent"> </span></hr>' +
         '</div>';
@@ -229,9 +229,9 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     var page_with_redirects_tests = '<h1>Page with redirect</h1>' +
         '<div id="openRedirect301"></div>' +
-        'Expected result: should 301 and open successfully in InAppBrowser to https://www.google.co.uk.' +
+        'Expected result: should 301 and open successfully in InAppBrowser to https://www-archive.google.co.uk.' +
         '<p/> <div id="openRedirect302"></div>' +
-        'Expected result: should 302 and open successfully in InAppBrowser to www.zhihu.com/answer/16714076.';
+        'Expected result: should 302 and open successfully in InAppBrowser to www-archive.zhihu.com/answer/16714076.';
 
     var pdf_url_tests = '<h1>PDF URL</h1>' +
         '<div id="openPDF"></div>' +
@@ -271,11 +271,11 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         '<div id="openHidden"></div>' +
         'Expected result: no additional browser window. Alert appears with the text "background window loaded".' +
         '<p/> <div id="showHidden"></div>' +
-        'Expected result: after first clicking on previous test "create hidden", open successfully in InAppBrowser to https://www.google.co.uk.' +
+        'Expected result: after first clicking on previous test "create hidden", open successfully in InAppBrowser to https://www-archive.google.co.uk.' +
         '<p/> <div id="closeHidden"></div>' +
         'Expected result: no output. But click on "show hidden" again and nothing should be shown.' +
         '<p/> <div id="openHiddenShow"></div>' +
-        'Expected result: open successfully in InAppBrowser to https://www.google.co.uk';
+        'Expected result: open successfully in InAppBrowser to https://www-archive.google.co.uk';
 
     var clearing_cache_tests = '<h1>Clearing Cache</h1>' +
         '<div id="openClearCache"></div>' +
@@ -364,22 +364,22 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     //Non White Listed
     createActionButton('target=Default', function () {
-        doOpen('http://www.apple.com');
+        doOpen('http://www-archive.apple.com');
     }, 'openNonWhiteListed');
     createActionButton('target=_self', function () {
-        doOpen('http://www.apple.com', '_self');
+        doOpen('http://www-archive.apple.com', '_self');
     }, 'openNonWhiteListedSelf');
     createActionButton('target=_system', function () {
-        doOpen('http://www.apple.com', '_system');
+        doOpen('http://www-archive.apple.com', '_system');
     }, 'openNonWhiteListedSystem');
     createActionButton('target=_blank', function () {
-        doOpen('http://www.apple.com', '_blank');
+        doOpen('http://www-archive.apple.com', '_blank');
     }, 'openNonWhiteListedBlank');
     createActionButton('target=Random', function () {
-        doOpen('http://www.apple.com', 'random_string');
+        doOpen('http://www-archive.apple.com', 'random_string');
     }, 'openNonWhiteListedRandom');
     createActionButton('* target=Random, no location bar', function () {
-        doOpen('http://www.apple.com', 'random_string', 'location=no');
+        doOpen('http://www-archive.apple.com', 'random_string', 'location=no');
     }, 'openNonWhiteListedRandomNoLocation');
 
     //Page with redirect
@@ -392,7 +392,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     //PDF URL
     createActionButton('Remote URL', function () {
-        doOpen('http://www.stluciadance.com/prospectus_file/sample.pdf');
+        doOpen('http://www-archive.stluciadance.com/prospectus_file/sample.pdf');
     }, 'openPDF');
     createActionButton('Local URL', function () {
         doOpen(localpdf, '_blank');
@@ -400,10 +400,10 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     //Invalid URL
     createActionButton('Invalid Scheme', function () {
-        doOpen('x-ttp://www.invalid.com/', '_blank');
+        doOpen('x-ttp://www-archive.invalid.com/', '_blank');
     }, 'openInvalidScheme');
     createActionButton('Invalid Host', function () {
-        doOpen('http://www.inv;alid.com/', '_blank');
+        doOpen('http://www-archive.inv;alid.com/', '_blank');
     }, 'openInvalidHost');
     createActionButton('Missing Local File', function () {
         doOpen('nonexistent.html', '_blank');
@@ -440,7 +440,7 @@ exports.defineManualTests = function (contentEl, createActionButton) {
 
     //Open hidden
     createActionButton('Create Hidden', function () {
-        openHidden('https://www.google.co.uk', true);
+        openHidden('https://www-archive.google.co.uk', true);
     }, 'openHidden');
     createActionButton('Show Hidden', function () {
         showHidden();
@@ -449,15 +449,15 @@ exports.defineManualTests = function (contentEl, createActionButton) {
         closeHidden();
     }, 'closeHidden');
     createActionButton('google.co.uk Not Hidden', function () {
-        openHidden('https://www.google.co.uk', false);
+        openHidden('https://www-archive.google.co.uk', false);
     }, 'openHiddenShow');
 
     //Clearing cache
     createActionButton('Clear Browser Cache', function () {
-        doOpen('https://www.google.co.uk', '_blank', 'clearcache=yes');
+        doOpen('https://www-archive.google.co.uk', '_blank', 'clearcache=yes');
     }, 'openClearCache');
     createActionButton('Clear Session Cache', function () {
-        doOpen('https://www.google.co.uk', '_blank', 'clearsessioncache=yes');
+        doOpen('https://www-archive.google.co.uk', '_blank', 'clearsessioncache=yes');
     }, 'openClearSessionCache');
 
     //Video tag

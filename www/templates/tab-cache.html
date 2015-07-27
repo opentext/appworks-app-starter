@@ -1,0 +1,63 @@
+<ion-view view-title="Cache">
+    <ion-content class="padding">
+
+        <div class="card">
+            <div class="item item-divider">
+                Overview
+            </div>
+            <div class="item item-text-wrap">
+                <p>
+                    The cache allows you to store items for quick retrieval. Items will persist for the life of the application
+                    and onwards, until you explicitly clear the cache by calling <code>appworks.cache.clear()</code> or by
+                    removing an item with a particular key with <code>appworks.cache.removeItem(key)</code>
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="item item-divider">
+                Tips
+            </div>
+            <div class="item item-text-wrap">
+                <p>
+                    Try it out below. Supply a key and a value, then retrieve that item from the cache. Try it with
+                    multiple keys for multiple values. Then try to clear the cache and get one of the keys you
+                    previously stored.
+                </p>
+            </div>
+        </div>
+
+        <div class="list">
+
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Key</span>
+                <input type="text" placeholder="myKey" ng-model="cache.key">
+            </label>
+
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Value</span>
+                <input type="text" placeholder="1234" ng-model="cache.data">
+            </label>
+
+            <button class="button button-block button-royal" ng-click="cache.setItem(cache.key, cache.data)">
+                Store Item
+            </button>
+
+            <label class="item item-input item-stacked-label">
+                <span class="input-label">Key</span>
+                <input type="text" placeholder="myKey" ng-model="cache.key">
+            </label>
+
+            <button class="button button-block button-positive" ng-click="cache.getItem(cache.key)">
+                Get Item
+            </button>
+
+            <p class="text-center">{{cache.key}}: {{cache.cacheData}}</p>
+
+            <button class="button button-block button-light" ng-click="cache.clear()">
+                Clear
+            </button>
+
+        </div>
+    </ion-content>
+</ion-view>

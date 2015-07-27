@@ -123,7 +123,7 @@ FileReader.prototype.abort = function() {
  * Read text file.
  *
  * @param file          {File} File object containing file properties
- * @param encoding      [Optional] (see http://www.iana.org/assignments/character-sets)
+ * @param encoding      [Optional] (see http://www-archive.iana.org/assignments/character-sets)
  */
 FileReader.prototype.readAsText = function(file, encoding) {
     if (initRead(this, file)) {

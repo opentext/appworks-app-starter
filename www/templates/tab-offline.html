@@ -1,0 +1,52 @@
+<ion-view view-title="Working Offline">
+    <ion-content>
+        <div class="card">
+            <div class="item item-divider">
+                Overview
+            </div>
+            <div class="item item-text-wrap">
+                <p>
+                    AppWorks JS allows you to work offline by storing http requests and firing them once the device
+                    comes back online. This example will send a request to fetch random user data and display it below.
+                </p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="item item-divider">
+                Tips
+            </div>
+            <div class="item item-text-wrap">
+                <p>
+                    First try sending a request with the device online. Then try putting the device on airplane mode
+                    and trying again - nothing should happen. Then turn the device back online and watch as the
+                    requests are made automatically.
+                </p>
+                <p>
+                    <b>Advanced:</b>
+                    Turn the device offline. Then exit the app completely and kill it. Come back online. Open the app
+                    back up. Watch as the requests are made.
+                </p>
+            </div>
+        </div>
+
+        <div class="list">
+
+            <button class="button button-block button-royal" ng-click="offline.queue()">
+                Make a Single Request
+            </button>
+
+            <button class="button button-block button-royal" ng-click="offline.queueMultiple()">
+                Make a Series of Requests
+            </button>
+
+            <a class="item item-avatar" href="#" ng-show="offline.users.length > 0" ng-repeat="user in offline.users">
+                <img ng-src="{{user.user.picture.medium}}">
+                <h2>{{user.user.name.first + ' ' + user.user.name.first}}</h2>
+                <p>{{user.user.email}}</p>
+            </a>
+
+        </div>
+
+    </ion-content>
+</ion-view>

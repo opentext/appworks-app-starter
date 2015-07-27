@@ -1,0 +1,43 @@
+<ion-view view-title="On Device Technology">
+    <ion-content>
+
+        <div class="card">
+            <div class="item item-divider">
+                Overview
+            </div>
+            <div class="item item-text-wrap">
+                <p>
+                    AppWorks JS allows you to access device technology such as the camera, compass, accelerometer, and
+                    more. Check the <a href="http://awg-docs.appworks.dev">docs</a> for more examples.
+                </p>
+            </div>
+        </div>
+
+        <div class="list">
+            <div class="item item-button-right">
+                Open Device Camera
+                <button class="button button-royal" ng-click="device.openCamera()">
+                    <i class="icon ion-ios-camera"></i>
+                </button>
+            </div>
+
+            <div class="item item-button-right">
+                Open Device Gallery
+                <button class="button button-royal" ng-click="device.openGallery()">
+                    <i class="icon ion-ios-film"></i>
+                </button>
+            </div>
+
+            <a class="item item-thumbnail-left" href="#" ng-show="device.imgSrc">
+                <img data-ng-src="{{device.imgSrc}}">
+                <h2>Image</h2>
+                <p>This is the image you selected.</p>
+            </a>
+
+            <div class="item" ng-show="device.err">
+                <p class="text-warning">{{device.err}}</p>
+            </div>
+
+        </div>
+    </ion-content>
+</ion-view>

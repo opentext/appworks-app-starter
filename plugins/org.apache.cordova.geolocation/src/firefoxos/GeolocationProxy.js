@@ -19,7 +19,7 @@
  *
 */
            
-// latest geolocation spec can be found here: http://www.w3.org/TR/geolocation-API/
+// latest geolocation spec can be found here: http://www-archive.w3.org/TR/geolocation-API/
 
 var idsMap = {};
 

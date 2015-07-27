@@ -1,0 +1,29 @@
+<!--
+Create tabs with an icon and label, using the tabs-positive style.
+Each tab's child <ion-nav-view> directive will have its own
+navigation history that also transitions its views in and out.
+-->
+<ion-tabs class="tabs-icon-top tabs-color-active-positive">
+
+    <!-- Secure Storage Tab -->
+    <ion-tab title="Secure Storage" icon-off="ion-ios-locked-outline" icon-on="ion-ios-locked" href="#/tab/secureStorage">
+        <ion-nav-view name="tab-secure-storage"></ion-nav-view>
+    </ion-tab>
+
+    <!-- Cache Tab -->
+    <ion-tab title="Cache" icon-off="ion-ios-copy-outline" icon-on="ion-ios-copy" href="#/tab/cache">
+        <ion-nav-view name="tab-cache"></ion-nav-view>
+    </ion-tab>
+
+    <!-- Offline Tab -->
+    <ion-tab title="Working Offline" icon-off="ion-ios-cloud-outline" icon-on="ion-ios-cloud" href="#/tab/offline">
+        <ion-nav-view name="tab-offline"></ion-nav-view>
+    </ion-tab>
+
+    <!-- Device Tab -->
+    <ion-tab title="Device" icon-off="ion-ios-camera-outline" icon-on="ion-ios-camera" href="#/tab/device">
+        <ion-nav-view name="tab-device"></ion-nav-view>
+    </ion-tab>
+
+
+</ion-tabs>
