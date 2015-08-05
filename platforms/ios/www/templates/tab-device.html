@@ -28,6 +28,19 @@
                 </button>
             </div>
 
+            <div class="item item-button-right">
+                Trigger a notification
+                <button class="button button-royal" ng-click="device.triggerNotification()">
+                    <i class="icon ion-ios-bell"></i>
+                </button>
+            </div>
+            <div class="item item-button-right">
+                Clear notifications
+                <button class="button button-royal" ng-click="device.clearNotifications()">
+                    <i class="icon ion-ios-close-outline"></i>
+                </button>
+            </div>
+
             <a class="item item-thumbnail-left" href="#" ng-show="device.imgSrc">
                 <img data-ng-src="{{device.imgSrc}}">
                 <h2>Image</h2>
@@ -36,6 +49,10 @@
 
             <div class="item" ng-show="device.err">
                 <p class="text-warning">{{device.err}}</p>
+            </div>
+
+            <div class="item" ng-show="device.notifications" ng-repeat="notification in device.notifications">
+                <pre>{{notification}}</pre>
             </div>
 
         </div>

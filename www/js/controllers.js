@@ -134,4 +134,32 @@ angular.module('starter.controllers', [])
             });
         };
 
+        self.triggerNotification = function () {
+            appworks.notification.schedule({
+                id: 1,
+                text: 'Notification triggered via appworksJS',
+                icon: 'http://www.optimizeordie.de/wp-content/plugins/social-media-widget/images/default/64/googleplus.png',
+                sound: null,
+                data: {test:1}
+            });
+            self.syncNotifications();
+        };
+
+        self.clearNotifications = function () {
+            self.notifications = [];
+            appworks.notification.clearAll();
+        };
+
+        self.getNotifications = function (callback) {
+            appworks.notification.getAll(callback);
+        };
+
+        self.syncNotifications = function () {
+            self.getNotifications(function (notifications) {
+                $scope.$applyAsync(self.notifications = notifications);
+            });
+        };
+
+        self.syncNotifications();
+
     });
