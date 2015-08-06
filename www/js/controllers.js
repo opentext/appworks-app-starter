@@ -114,6 +114,17 @@ angular.module('starter.controllers', [])
     .controller('DeviceCtrl', function ($scope) {
         var self = this;
 
+        self.notifications = [];
+        self.notificationsEnabled = false;
+
+        $scope.$watch('device.notificationsEnabled', function (on) {
+            if (on) {
+                self.enableNotifications();
+            } else {
+                self.stopNotifications();
+            }
+        });
+
         self.openCamera = function () {
             self.err = null;
             self.imgSrc = null;
@@ -134,32 +145,24 @@ angular.module('starter.controllers', [])
             });
         };
 
-        self.triggerNotification = function () {
-            appworks.notification.schedule({
-                id: 1,
-                text: 'Notification triggered via appworksJS',
-                icon: 'http://www.optimizeordie.de/wp-content/plugins/social-media-widget/images/default/64/googleplus.png',
-                sound: null,
-                data: {test:1}
-            });
+        self.clearNotifications = function () {
+            self.notifications = [];
+        };
+
+        self.stopNotifications = function () {
+            appworks.notifications.off();
+        };
+
+        self.enableNotifications = function () {
+            appworks.notifications.on();
+        };
+
+        self.getNotifications = function () {
             self.syncNotifications();
         };
 
-        self.clearNotifications = function () {
-            self.notifications = [];
-            appworks.notification.clearAll();
-        };
-
-        self.getNotifications = function (callback) {
-            appworks.notification.getAll(callback);
-        };
-
         self.syncNotifications = function () {
-            self.getNotifications(function (notifications) {
-                $scope.$applyAsync(self.notifications = notifications);
-            });
+            $scope.$applyAsync(self.notifications = appworks.notifications.get());
         };
-
-        self.syncNotifications();
 
     });
