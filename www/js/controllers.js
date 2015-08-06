@@ -129,9 +129,11 @@ angular.module('starter.controllers', [])
             self.err = null;
             self.imgSrc = null;
             appworks.camera.takePicture(function (dataUrl) {
-                $scope.$apply(self.imgSrc = dataUrl);
+                self.imgSrc = dataUrl
+                $scope.$apply();
             }, function (err) {
-                $scope.$apply(self.err = err);
+                self.err = err;
+                $scope.$apply();
             });
         };
 
@@ -139,9 +141,11 @@ angular.module('starter.controllers', [])
             self.err = null;
             self.imgSrc = null;
             appworks.camera.chooseFromLibrary(function (dataUrl) {
-                $scope.$apply(self.imgSrc = dataUrl);
+                self.imgSrc = dataUrl
+                $scope.$apply();
             }, function (err) {
-                $scope.$apply(self.err = err);
+                self.err = err
+                $scope.$apply();
             });
         };
 
