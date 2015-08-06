@@ -87,10 +87,6 @@
                         {
                             "xml": "<feature name=\"FileTransfer\"><param name=\"ios-package\" value=\"OTMFileTransfer\" /></feature>",
                             "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"LocalNotification\"><param name=\"ios-package\" onload=\"true\" value=\"APPLocalNotification\" /><param name=\"onload\" value=\"true\" /></feature>",
-                            "count": 1
                         }
                     ]
                 }
@@ -221,9 +217,6 @@
             "PACKAGE_NAME": "com.opentext.mobile"
         },
         "com.opentext.mobile.file-transfer": {
-            "PACKAGE_NAME": "com.opentext.mobile"
-        },
-        "de.appplant.cordova.plugin.local-notification": {
             "PACKAGE_NAME": "com.opentext.mobile"
         }
     },

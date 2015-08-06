@@ -112,14 +112,5 @@
             "type": "local",
             "path": "/Users/jibrahim/Desktop/com.opentext.mobile.file-transfer"
         }
-    },
-    "de.appplant.cordova.plugin.local-notification": {
-        "source": {
-            "type": "git",
-            "url": "https://github.com/katzer/cordova-plugin-local-notifications",
-            "subdir": "."
-        },
-        "is_top_level": true,
-        "variables": {}
     }
 }
