@@ -115,7 +115,7 @@ angular.module('starter.controllers', [])
         var self = this;
 
         self.notifications = [];
-        self.notificationsEnabled = false;
+        self.notificationsEnabled = true;
 
         $scope.$watch('device.notificationsEnabled', function (on) {
             if (on) {
