@@ -149,9 +149,9 @@ angular.module('starter.controllers', [])
             });
         };
 
-        appworks.notifications.onmessage = function (notification) {
+        appworks.notifications.handler(function (notification) {
             $scope.$apply(self.notifications.push(notification));
-        };
+        });
 
         self.clearNotifications = function () {
             self.notifications = [];
