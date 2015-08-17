@@ -114,13 +114,26 @@ angular.module('starter.controllers', [])
     .controller('DeviceCtrl', function ($scope) {
         var self = this;
 
+        self.notifications = [];
+        self.notificationsEnabled = true;
+
+        $scope.$watch('device.notificationsEnabled', function (on) {
+            if (on) {
+                self.enableNotifications();
+            } else {
+                self.stopNotifications();
+            }
+        });
+
         self.openCamera = function () {
             self.err = null;
             self.imgSrc = null;
             appworks.camera.takePicture(function (dataUrl) {
-                $scope.$apply(self.imgSrc = dataUrl);
+                self.imgSrc = dataUrl;
+                $scope.$apply();
             }, function (err) {
-                $scope.$apply(self.err = err);
+                self.err = err;
+                $scope.$apply();
             });
         };
 
@@ -128,38 +141,36 @@ angular.module('starter.controllers', [])
             self.err = null;
             self.imgSrc = null;
             appworks.camera.chooseFromLibrary(function (dataUrl) {
-                $scope.$apply(self.imgSrc = dataUrl);
+                self.imgSrc = dataUrl;
+                $scope.$apply();
             }, function (err) {
-                $scope.$apply(self.err = err);
+                self.err = err;
+                $scope.$apply();
             });
         };
 
-        self.triggerNotification = function () {
-            appworks.notification.schedule({
-                id: 1,
-                text: 'Notification triggered via appworksJS',
-                icon: 'http://www.optimizeordie.de/wp-content/plugins/social-media-widget/images/default/64/googleplus.png',
-                sound: null,
-                data: {test:1}
-            });
-            self.syncNotifications();
-        };
+        appworks.notifications.handler(function (notification) {
+            $scope.$apply(self.notifications.push(notification));
+        });
 
         self.clearNotifications = function () {
             self.notifications = [];
-            appworks.notification.clearAll();
         };
 
-        self.getNotifications = function (callback) {
-            appworks.notification.getAll(callback);
+        self.stopNotifications = function () {
+            appworks.notifications.off();
+        };
+
+        self.enableNotifications = function () {
+            appworks.notifications.on();
+        };
+
+        self.getNotifications = function () {
+            self.syncNotifications();
         };
 
         self.syncNotifications = function () {
-            self.getNotifications(function (notifications) {
-                $scope.$applyAsync(self.notifications = notifications);
-            });
+            $scope.$applyAsync(self.notifications = appworks.notifications.get());
         };
-
-        self.syncNotifications();
 
     });

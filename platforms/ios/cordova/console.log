@@ -1,0 +1,19 @@
+2015-08-17 09:39:52.881 opentextmobile[15624:1651752] DiskCookieStorage changing policy from 2 to 0, cookie file: file:///Users/jibrahim/Library/Developer/CoreSimulator/Devices/FB649BF7-6BEA-4DF1-9265-DD12252C3F10/data/Containers/Data/Application/C7F3CB17-3055-4598-AA14-40FDE59CB15D/Library/Cookies/Cookies.binarycookies
+2015-08-17 09:39:53.061 opentextmobile[15624:1651752] Apache Cordova native platform version 3.8.0 is starting.
+2015-08-17 09:39:53.062 opentextmobile[15624:1651752] Multi-tasking -> Device: YES, App: YES
+2015-08-17 09:39:53.076 opentextmobile[15624:1651752] Unlimited access to network resources
+2015-08-17 09:39:53.093 opentextmobile[15624:1651752] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2015-08-17 09:39:53.348 opentextmobile[15624:1651752] [CDVTimer][file] 3.102005ms
+2015-08-17 09:39:53.387 opentextmobile[15624:1651752] [CDVTimer][splashscreen] 39.574981ms
+2015-08-17 09:39:53.387 opentextmobile[15624:1651752] [CDVTimer][TotalPluginStartup] 43.397009ms
+2015-08-17 09:39:53.436 opentextmobile[15624:1651752] Resetting plugins due to page load.
+2015-08-17 09:39:53.640 opentextmobile[15624:1651752] Finished load of: file:///Users/jibrahim/Library/Developer/CoreSimulator/Devices/FB649BF7-6BEA-4DF1-9265-DD12252C3F10/data/Containers/Bundle/Application/1984939D-6197-45FF-B8D8-CAA492A806B9/opentextmobile.app/www/index.html#/tab/secureStorage
+2015-08-17 09:40:11.049 opentextmobile[15624:1652094] Camera.getPicture: source type 1 not available.
+2015-08-17 09:40:26.131 opentextmobile[15624:1652096] File Transfer Finished with response code 200
