@@ -163,7 +163,8 @@ angular.module('starter.controllers', [])
                     'Timestamp: '         + position.timestamp                + '\n');
             }
 
-            function onError() {
+            function onError(err) {
+                console.log(err);
                 alert('Unable to get current location. Please make sure location services are enabled for this app');
             }
         };

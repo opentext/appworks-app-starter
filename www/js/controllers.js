@@ -153,6 +153,7 @@ angular.module('starter.controllers', [])
             appworks.geolocation.getCurrentPosition(onSuccess, onError);
 
             function onSuccess(position) {
+                console.log(position);
                 alert('Latitude: '          + position.coords.latitude          + '\n' +
                     'Longitude: '         + position.coords.longitude         + '\n' +
                     'Altitude: '          + position.coords.altitude          + '\n' +
@@ -163,7 +164,8 @@ angular.module('starter.controllers', [])
                     'Timestamp: '         + position.timestamp                + '\n');
             }
 
-            function onError() {
+            function onError(err) {
+                console.log(err);
                 alert('Unable to get current location. Please make sure location services are enabled for this app');
             }
         };
