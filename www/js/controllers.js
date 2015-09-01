@@ -150,7 +150,7 @@ angular.module('starter.controllers', [])
         };
 
         self.getLocation = function () {
-            appworks.geolocation.getCurrentPosition(onSuccess, onError, {enableHighAccuracy: true, timeout: 500});
+            appworks.geolocation.getCurrentPosition(onSuccess, onError);
 
             function onSuccess(position) {
                 console.log(position);
