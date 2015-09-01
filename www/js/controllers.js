@@ -150,7 +150,7 @@ angular.module('starter.controllers', [])
         };
 
         self.getLocation = function () {
-            appworks.geolocation.getCurrentPosition(onSuccess, onError);
+            appworks.geolocation.getCurrentPosition(onSuccess, onError, {enableHighAccuracy: true, timeout: 2000});
 
             function onSuccess(position) {
                 console.log(position);
@@ -166,7 +166,7 @@ angular.module('starter.controllers', [])
 
             function onError(err) {
                 console.log(err);
-                alert('Unable to get current location. Please make sure location services are enabled for this app');
+                alert('Unable to get current location. In general this means the device has no network connectivity and/or cannot get a satellite fix');
             }
         };
 
