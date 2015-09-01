@@ -69,3 +69,21 @@ To disable web storage backup to iCloud, set the BackupWebStorage preference to 
 2015-08-19 11:39:39.036 opentextmobile[44649:1992443] [CDVTimer][TotalPluginStartup] 15.807033ms
 2015-08-19 11:39:39.072 opentextmobile[44649:1992443] Resetting plugins due to page load.
 2015-08-19 11:39:39.207 opentextmobile[44649:1992443] Finished load of: file:///Users/jibrahim/Library/Developer/CoreSimulator/Devices/FB649BF7-6BEA-4DF1-9265-DD12252C3F10/data/Containers/Bundle/Application/948FA083-500B-44A3-BC14-ACC52DE02095/opentextmobile.app/www/index.html#/tab/secureStorage
+2015-08-20 09:20:12.944 opentextmobile[18894:99415] DiskCookieStorage changing policy from 2 to 0, cookie file: file:///Users/jibrahim/Library/Developer/CoreSimulator/Devices/FB649BF7-6BEA-4DF1-9265-DD12252C3F10/data/Containers/Data/Application/31DAAAC4-0C49-440C-A648-18DD6994DD0D/Library/Cookies/Cookies.binarycookies
+2015-08-20 09:20:13.234 opentextmobile[18894:99415] Apache Cordova native platform version 3.8.0 is starting.
+2015-08-20 09:20:13.235 opentextmobile[18894:99415] Multi-tasking -> Device: YES, App: YES
+2015-08-20 09:20:13.251 opentextmobile[18894:99415] Unlimited access to network resources
+2015-08-20 09:20:13.263 opentextmobile[18894:99415] 
+
+Started backup to iCloud! Please be careful.
+Your application might be rejected by Apple if you store too much data.
+For more information please read "iOS Data Storage Guidelines" at:
+https://developer.apple.com/icloud/documentation/data-storage/
+To disable web storage backup to iCloud, set the BackupWebStorage preference to "local" in the Cordova config.xml file
+
+2015-08-20 09:20:13.592 opentextmobile[18894:99415] [CDVTimer][file] 9.261966ms
+2015-08-20 09:20:13.725 opentextmobile[18894:99415] [CDVTimer][splashscreen] 132.800996ms
+2015-08-20 09:20:13.725 opentextmobile[18894:99415] [CDVTimer][TotalPluginStartup] 143.257976ms
+2015-08-20 09:20:13.779 opentextmobile[18894:99415] Resetting plugins due to page load.
+2015-08-20 09:20:14.032 opentextmobile[18894:99415] Finished load of: file:///Users/jibrahim/Library/Developer/CoreSimulator/Devices/FB649BF7-6BEA-4DF1-9265-DD12252C3F10/data/Containers/Bundle/Application/8ED63BB4-66CC-4A10-BEC5-C53533460AAD/opentextmobile.app/www/index.html#/tab/secureStorage
+2015-08-20 09:20:40.092 opentextmobile[18894:100278] File Transfer Finished with response code 200
