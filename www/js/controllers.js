@@ -125,75 +125,98 @@ angular.module('starter.controllers', [])
             }
         });
 
+        self.scanQRCode = function () {
+            var qrScanner = new Appworks.QRReader(onScan, onScan);
+
+            qrScanner.scan();
+
+            function onScan(data) {
+                $scope.$apply(self.qrScanResult = data);
+            }
+        };
+
         self.openCamera = function () {
-            self.err = null;
-            self.imgSrc = null;
-            appworks.camera.takePicture(function (dataUrl) {
-                self.imgSrc = dataUrl;
-                $scope.$apply();
+            var camera = new Appworks.AWCamera(function (dataUrl) {
+                $scope.$apply(self.imgSrc = dataUrl);
             }, function (err) {
                 self.err = err;
                 $scope.$apply();
             });
+            self.err = null;
+            self.imgSrc = null;
+            camera.takePicture();
         };
 
         self.openGallery = function () {
-            self.err = null;
-            self.imgSrc = null;
-            appworks.camera.chooseFromLibrary(function (dataUrl) {
-                self.imgSrc = dataUrl;
-                $scope.$apply();
+            var gallery = new Appworks.AWCamera(function (dataUrl) {
+                $scope.$apply(self.imgSrc = dataUrl);
             }, function (err) {
                 self.err = err;
                 $scope.$apply();
             });
+            self.err = null;
+            self.imgSrc = null;
+            gallery.openGallery();
         };
 
-        self.getLocation = function () {
-            appworks.geolocation.getCurrentPosition(onSuccess, onError);
+        //self.getLocation = function () {
+        //    Appworks.Geolocation.getCurrentPosition(onSuccess, onError);
+        //
+        //    function onSuccess(position) {
+        //        console.log(position);
+        //        alert(
+        //            'Latitude: '          + position.coords.latitude          + '\n' +
+        //            'Longitude: '         + position.coords.longitude         + '\n' +
+        //            'Altitude: '          + position.coords.altitude          + '\n' +
+        //            'Accuracy: '          + position.coords.accuracy          + '\n' +
+        //            'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+        //            'Heading: '           + position.coords.heading           + '\n' +
+        //            'Speed: '             + position.coords.speed             + '\n' +
+        //            'Timestamp: '         + position.timestamp                + '\n');
+        //    }
+        //
+        //    function onError(err) {
+        //        console.log(err);
+        //        alert('Unable to get current location.' +
+        //            ' In general this means the device has no network connectivity and/or cannot get a satellite fix');
+        //    }
+        //};
 
-            function onSuccess(position) {
-                console.log(position);
-                alert(
-                    'Latitude: '          + position.coords.latitude          + '\n' +
-                    'Longitude: '         + position.coords.longitude         + '\n' +
-                    'Altitude: '          + position.coords.altitude          + '\n' +
-                    'Accuracy: '          + position.coords.accuracy          + '\n' +
-                    'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-                    'Heading: '           + position.coords.heading           + '\n' +
-                    'Speed: '             + position.coords.speed             + '\n' +
-                    'Timestamp: '         + position.timestamp                + '\n');
-            }
-
-            function onError(err) {
-                console.log(err);
-                alert('Unable to get current location.' +
-                    ' In general this means the device has no network connectivity and/or cannot get a satellite fix');
-            }
-        };
-
-        appworks.notifications.handler(function (notification) {
-            $scope.$apply(self.notifications.push(notification));
-        });
+        //Appworks.Notifications.handler(function (notification) {
+        //    $scope.$apply(self.notifications.push(notification));
+        //});
 
         self.clearNotifications = function () {
             self.notifications = [];
         };
 
-        self.stopNotifications = function () {
-            appworks.notifications.off();
-        };
+        //self.stopNotifications = function () {
+        //    appworks.notifications.off();
+        //};
 
-        self.enableNotifications = function () {
-            appworks.notifications.on();
-        };
+        //self.enableNotifications = function () {
+        //    appworks.notifications.on();
+        //};
 
         self.getNotifications = function () {
             self.syncNotifications();
         };
 
-        self.syncNotifications = function () {
-            $scope.$applyAsync(self.notifications = appworks.notifications.get());
-        };
+        //self.syncNotifications = function () {
+        //    $scope.$applyAsync(self.notifications = appworks.notifications.get());
+        //};
+    })
 
+    .controller('AuthCtrl', function ($scope) {
+
+        var auth = new Appworks.Auth(onAuth, onAuth);
+
+        function onAuth(data) {
+            console.log(data);
+            $scope.$apply($scope.response = data.data);
+        }
+
+        this.authenticate = function () {
+            auth.authenticate();
+        };
     });

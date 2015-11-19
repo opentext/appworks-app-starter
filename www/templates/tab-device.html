@@ -14,38 +14,29 @@
         </div>
 
         <div class="list">
+
+            <div class="item item-button-right">
+                Scan QR Code
+                <button class="button button-clear button-royal" ng-click="device.scanQRCode()">
+                    <i class="icon ion-ios-book-outline"></i>
+                </button>
+            </div>
+
+            <div class="item item-text-wrap" ng-show="device.qrScanResult">
+                {{device.qrScanResult}}
+            </div>
+
             <div class="item item-button-right">
                 Open Device Camera
-                <button class="button button-royal" ng-click="device.openCamera()">
-                    <i class="icon ion-ios-camera"></i>
+                <button class="button button-clear button-royal" ng-click="device.openCamera()">
+                    <i class="icon ion-ios-camera-outline"></i>
                 </button>
             </div>
 
             <div class="item item-button-right">
                 Open Device Gallery
-                <button class="button button-royal" ng-click="device.openGallery()">
-                    <i class="icon ion-ios-film"></i>
-                </button>
-            </div>
-
-            <div class="item item-button-right">
-                Get current location
-                <button class="button button-royal" ng-click="device.getLocation()">
-                    <i class="icon ion-ios-navigate"></i>
-                </button>
-            </div>
-
-            <ion-toggle ng-model="device.notificationsEnabled" toggle-class="toggle-calm">Enable Notifications</ion-toggle>
-            <div class="item item-button-right">
-                Get Notifications
-                <button class="button button-royal" ng-click="device.getNotifications()">
-                    <i class="icon ion-ios-bell"></i>
-                </button>
-            </div>
-            <div class="item item-button-right">
-                Clear notifications
-                <button class="button button-royal" ng-click="device.clearNotifications()">
-                    <i class="icon ion-ios-close-outline"></i>
+                <button class="button button-clear button-royal" ng-click="device.openGallery()">
+                    <i class="icon ion-ios-film-outline"></i>
                 </button>
             </div>
 
@@ -54,6 +45,29 @@
                 <h2>Image</h2>
                 <p>This is the image you selected.</p>
             </a>
+
+            <div class="item item-button-right">
+                Get current location
+                <button class="button button-clear button-royal" ng-click="device.getLocation()">
+                    <i class="icon ion-ios-navigate-outline"></i>
+                </button>
+            </div>
+
+            <ion-toggle ng-model="device.notificationsEnabled" toggle-class="toggle-royal">
+                Enable Notifications
+            </ion-toggle>
+            <div class="item item-button-right">
+                Get Notifications
+                <button class="button button-clear button-royal" ng-click="device.getNotifications()">
+                    <i class="icon ion-ios-bell-outline"></i>
+                </button>
+            </div>
+            <div class="item item-button-right">
+                Clear notifications
+                <button class="button button-clear button-royal" ng-click="device.clearNotifications()">
+                    <i class="icon ion-ios-close-outline"></i>
+                </button>
+            </div>
 
             <div class="item" ng-show="device.err">
                 <p class="text-warning">{{device.err}}</p>

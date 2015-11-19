@@ -7,6 +7,10 @@
 // 'starter.controllers' is found in controllers.js
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
+    .config(function($compileProvider){
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile|assets-library):|data:image\//);
+    })
+
     .run(function ($ionicPlatform) {
         $ionicPlatform.ready(function () {
             // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -65,6 +69,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     'tab-offline': {
                         templateUrl: 'templates/tab-offline.html',
                         controller: 'OfflineCtrl as offline'
+                    }
+                }
+            })
+            .state('tab.auth', {
+                url: '/auth',
+                views: {
+                    'tab-auth': {
+                        templateUrl: 'templates/tab-auth.html',
+                        controller: 'AuthCtrl as auth'
                     }
                 }
             })
