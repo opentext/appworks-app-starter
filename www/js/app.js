@@ -44,12 +44,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
             // Each tab has its own nav history stack:
 
-            .state('tab.secureStorage', {
-                url: '/secureStorage',
+            .state('tab.file', {
+                url: '/file',
                 views: {
-                    'tab-secure-storage': {
-                        templateUrl: 'templates/tab-secure-storage.html',
-                        controller: 'SecureStorageCtrl as storage'
+                    'tab-file': {
+                        templateUrl: 'templates/tab-file.html',
+                        controller: 'FileCtrl as file'
                     }
                 }
             })
@@ -92,6 +92,6 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
             });
 
         // if none of the above states are matched, use this as the fallback
-        $urlRouterProvider.otherwise('/tab/secureStorage');
+        $urlRouterProvider.otherwise('/tab/file');
 
     });

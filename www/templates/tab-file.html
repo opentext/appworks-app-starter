@@ -1,0 +1,96 @@
+<ion-view view-title="Secure Storage">
+    <ion-content class="padding">
+
+        <div class="card">
+            <div class="item item-divider">
+                Overview
+            </div>
+
+            <div class="item item-text-wrap">
+                <p>
+                    AppworksJS gives you access to the files stored on the device. You may open and list files,
+                    store files securely, upload and download files, and open files downloaded via appworks in
+                    third party applications.
+                </p>
+            </div>
+        </div>
+
+        <div class="item item-button-right">
+            Open File and List Directory
+            <button class="button button-clear button-royal" ng-click="file.listDirectory()">
+                <i class="icon ion-ios-list-outline"></i>
+            </button>
+        </div>
+
+        <div class="item item-text-wrap">
+            <p>
+                List the contents of a directory. This example lists a pre-populated directory. To open a file, tap
+                on the name of the file.
+            </p>
+        </div>
+
+        <div class="list">
+            <div class="item item-text-wrap"
+                 ng-show="file.openedDirectory.length > 0"
+                 ng-click="file.openFile(item.filename)"
+                 ng-repeat="item in file.openedDirectory">
+                <p>{{item.filename}}</p>
+            </div>
+        </div>
+
+        <div class="list">
+            <div class="item item-text-wrap" ng-show="file.openedFile">
+                <p>{{file.openedFile}}</p>
+            </div>
+        </div>
+
+        <div class="item item-button-right">
+            Secure Storage
+            <button class="button button-clear button-royal" ng-click="file.storeFile()">
+                <i class="icon ion-ios-locked-outline"></i>
+            </button>
+        </div>
+
+        <div class="item item-text-wrap">
+            <p>
+                Download a file and store it on the device securely. Uses AES 256bit encryption.
+                This example stores a random image securely.
+            </p>
+        </div>
+
+        <div class="list">
+            <div class="item item-text-wrap" ng-show="file.storedFile">
+                <p>{{file.storedFile}}</p>
+            </div>
+        </div>
+
+        <div class="item item-button-right">
+            Secure Retrieval
+            <button class="button button-clear button-royal"
+                    ng-click="file.getFile()">
+                <i ng-class="{
+                        'icon': true,
+                        'ion-ios-unlocked-outline': !file.loading,
+                        'ion-ios-locked-outline': file.loading
+                    }">
+                </i>
+            </button>
+        </div>
+
+        <div class="item item-text-wrap">
+            <p>
+                Open a file that was stored securely. This example opens the file that was downloaded using
+                Secure Retrieval.
+            </p>
+        </div>
+
+        <div class="list">
+            <a class="item item-thumbnail-left" href="#" ng-show="storage.imgSrc">
+                <img data-ng-src="{{storage.imgSrc}}">
+                <h2>Image</h2>
+                <p>Image courtesy of thecatapi.com</p>
+            </a>
+        </div>
+
+    </ion-content>
+</ion-view>

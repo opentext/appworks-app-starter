@@ -1,24 +1,60 @@
 angular.module('starter.controllers', [])
 
-    .controller('SecureStorageCtrl', function ($scope) {
+    .controller('FileCtrl', function ($scope) {
         var self = this;
 
         self.loading = true;
 
+        self.openFile = function (filename) {
+            var finder = new Appworks.Finder(showContents, showContents);
+
+            function showContents(data) {
+                console.log(data);
+                $scope.$apply(self.openedFile = data);
+            }
+
+            finder.open('/', filename);
+        };
+
+        self.listDirectory = function () {
+            var finder = new Appworks.Finder(showContents, showContents);
+
+            function showContents(data) {
+                console.log(data);
+                $scope.$apply(self.openedDirectory = data);
+            }
+
+            finder.list('/');
+        };
+
         self.storeFile = function () {
+            var storage = new Appworks.SecureStorage(stopLoading, stopLoading);
             self.imgSrc = null;
             self.loading = true;
-            appworks.storage.storeFile('file.jpg', 'http://thecatapi.com/api/images/get', function () {
+
+            function stopLoading() {
+                console.log('file downloaded successfully');
                 self.loading = false;
                 $scope.$apply();
-            });
+            }
+
+            storage.store('http://thecatapi.com/api/images/get', 'file.jpg');
         };
 
         self.getFile = function () {
-            appworks.storage.getFile('file.jpg', function (dataUrl) {
-                self.imgSrc = dataUrl;
-                $scope.$apply();
-            });
+            var storage = new Appworks.SecureStorage(showImage, errorHandler);
+
+            function showImage(file) {
+                $scope.$apply(self.imgSrc = file.fullPath);
+            }
+
+            storage.retrieve('file.jpg');
+        };
+
+        function errorHandler(err) {
+            console.log(err);
+            self.loading = false;
+            $scope.$apply();
         }
     })
 
