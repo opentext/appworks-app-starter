@@ -166,7 +166,7 @@ var Appworks;
                 cordova.exec(gotSharedContainerUrl, (function () { return _this.errorHandler; })(), 'AWSharedDocumentProvider', 'container');
             }
             else {
-                this.fileTransfer.download(encodeURI(url), cordova.file.documentsDirectory + '/' + target, (function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), false, options);
+                this.fileTransfer.download(encodeURI(url), cordova.file.documentsDirectory + '/' + target, successHandler, errorHandler, false, options);
             }
             return this.fileTransfer;
         };
@@ -184,7 +184,7 @@ var Appworks;
                 cordova.exec(gotSharedContainerUrl, (function () { return _this.errorHandler; })(), 'AWSharedDocumentProvider', 'container');
             }
             else {
-                this.fileTransfer.upload(cordova.file.documentsDirectory + '/' + source, encodeURI(url), (function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), options, false);
+                this.fileTransfer.upload(cordova.file.documentsDirectory + '/' + source, encodeURI(url), successHandler, errorHandler, options, false);
             }
             return this.fileTransfer;
         };
