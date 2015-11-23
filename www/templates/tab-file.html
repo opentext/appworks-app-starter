@@ -29,9 +29,8 @@
             </p>
         </div>
 
-        <div class="list">
+        <div class="list" ng-show="file.openedDirectory.length">
             <div class="item item-text-wrap"
-                 ng-show="file.openedDirectory.length > 0"
                  ng-click="file.openFile(item.filename)"
                  ng-repeat="item in file.openedDirectory">
                 <p>{{item.filename}}</p>
@@ -60,7 +59,7 @@
 
         <div class="list">
             <div class="item item-text-wrap" ng-show="file.storedFile">
-                <p>{{file.storedFile}}</p>
+                path to stored file: <p>{{file.storedFile}}</p>
             </div>
         </div>
 
@@ -79,17 +78,57 @@
 
         <div class="item item-text-wrap">
             <p>
-                Open a file that was stored securely. This example opens the file that was downloaded using
-                Secure Retrieval.
+                Open a file that was stored securely. This example shows the file that was downloaded using
+                Secure Storage.
             </p>
         </div>
 
         <div class="list">
-            <a class="item item-thumbnail-left" href="#" ng-show="storage.imgSrc">
-                <img data-ng-src="{{storage.imgSrc}}">
+            <a class="item item-thumbnail-left" href="#" ng-show="file.storedFile && file.showStoredFileAsImage">
+                <img data-ng-src="{{file.storedFile}}">
                 <h2>Image</h2>
                 <p>Image courtesy of thecatapi.com</p>
             </a>
+        </div>
+
+        <div class="item item-button-right">
+            File Transfer
+            <button class="button button-clear button-royal" ng-click="file.downloadFile()">
+                <i class="icon ion-ios-cloud-download-outline"></i>
+            </button>
+        </div>
+
+        <div class="item item-text-wrap">
+            <p>
+                Upload and Download files. Additionally, using File Transfer Downloads, you may make your files available
+                to third party applications installed on the device, e.g. Microsoft Word
+            </p>
+        </div>
+
+        <div class="list">
+            <div class="item item-text-wrap" ng-show="file.downloadedFile">
+                path to stored file: <p>{{file.downloadedFile}}</p>
+            </div>
+        </div>
+
+        <div class="item item-button-right">
+            File Transfer Shared
+            <button class="button button-clear button-royal" ng-click="file.downloadFileShared()">
+                <i class="icon ion-ios-cloud-download-outline"></i>
+            </button>
+        </div>
+
+        <div class="item item-text-wrap">
+            <p>
+                Download a file to a shared location.
+            </p>
+        </div>
+
+        <div class="list">
+            <div class="item item-text-wrap" ng-show="file.downloadedFileShared">
+                <p>The file has downloaded. Open up another app, navigate to iCloud Drive, find OpenText Mobile,
+                then look for a file named: {{file.downloadedFileShared.name}}</p>
+            </div>
         </div>
 
     </ion-content>

@@ -28,12 +28,18 @@ angular.module('starter.controllers', [])
         };
 
         self.storeFile = function () {
-            var storage = new Appworks.SecureStorage(stopLoading, stopLoading);
+            var storage = new Appworks.SecureStorage(setFile, stopLoading);
             self.imgSrc = null;
             self.loading = true;
+            self.showStoredFileAsImage = false;
+
+            function setFile(file) {
+                self.storedFile = file.nativeURL;
+                stopLoading();
+            }
 
             function stopLoading() {
-                console.log('file downloaded successfully');
+                console.log('AWJS: File downloaded successfully.');
                 self.loading = false;
                 $scope.$apply();
             }
@@ -41,11 +47,43 @@ angular.module('starter.controllers', [])
             storage.store('http://thecatapi.com/api/images/get', 'file.jpg');
         };
 
+        self.downloadFile = function (shared) {
+            var fileTransfer = new Appworks.AWFileTransfer(showFile, errorHandler);
+
+            function showFile(file) {
+                console.log(file);
+                self.downloadedFile = file.nativeURL;
+                $scope.$apply();
+            }
+
+            fileTransfer.progressHandler(function (progress) {
+                console.log(progress);
+            });
+
+            fileTransfer.download('http://thecatapi.com/api/images/get', 'file.jpg');
+        };
+
+        self.downloadFileShared = function () {
+            var fileTransfer = new Appworks.AWFileTransfer(showFile, errorHandler);
+
+            function showFile(file) {
+                console.log(file);
+                self.downloadedFileShared = file;
+                $scope.$apply();
+            }
+
+            fileTransfer.download('http://thecatapi.com/api/images/get', 'file.jpg', null, true);
+        };
+
         self.getFile = function () {
             var storage = new Appworks.SecureStorage(showImage, errorHandler);
 
+            self.showStoredFileAsImage = false;
+
             function showImage(file) {
-                $scope.$apply(self.imgSrc = file.fullPath);
+                self.storedFile = file.nativeURL;
+                self.showStoredFileAsImage = true;
+                $scope.$apply();
             }
 
             storage.retrieve('file.jpg');
