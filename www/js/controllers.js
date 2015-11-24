@@ -199,6 +199,19 @@ angular.module('starter.controllers', [])
             }
         });
 
+        self.getDeviceInfo = function () {
+            var device = new Appworks.AWDevice();
+            var info = {
+                cordova: device.cordova,
+                model: device.model,
+                platform: device.platform,
+                uuid: device.uuid,
+                version: device.version,
+                manufacturer: device.manufacturer
+            };
+            alert(JSON.stringify(info));
+        };
+
         self.scanQRCode = function () {
             var qrScanner = new Appworks.QRReader(onScan, onScan);
 
@@ -253,28 +266,30 @@ angular.module('starter.controllers', [])
             gallery.openGallery();
         };
 
-        //self.getLocation = function () {
-        //    Appworks.Geolocation.getCurrentPosition(onSuccess, onError);
-        //
-        //    function onSuccess(position) {
-        //        console.log(position);
-        //        alert(
-        //            'Latitude: '          + position.coords.latitude          + '\n' +
-        //            'Longitude: '         + position.coords.longitude         + '\n' +
-        //            'Altitude: '          + position.coords.altitude          + '\n' +
-        //            'Accuracy: '          + position.coords.accuracy          + '\n' +
-        //            'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
-        //            'Heading: '           + position.coords.heading           + '\n' +
-        //            'Speed: '             + position.coords.speed             + '\n' +
-        //            'Timestamp: '         + position.timestamp                + '\n');
-        //    }
-        //
-        //    function onError(err) {
-        //        console.log(err);
-        //        alert('Unable to get current location.' +
-        //            ' In general this means the device has no network connectivity and/or cannot get a satellite fix');
-        //    }
-        //};
+        self.getLocation = function () {
+            var geo = new Appworks.AWLocation(onSuccess, onError);
+
+            geo.getCurrentPosition();
+
+            function onSuccess(position) {
+                console.log(position);
+                alert(
+                    'Latitude: '          + position.coords.latitude          + '\n' +
+                    'Longitude: '         + position.coords.longitude         + '\n' +
+                    'Altitude: '          + position.coords.altitude          + '\n' +
+                    'Accuracy: '          + position.coords.accuracy          + '\n' +
+                    'Altitude Accuracy: ' + position.coords.altitudeAccuracy  + '\n' +
+                    'Heading: '           + position.coords.heading           + '\n' +
+                    'Speed: '             + position.coords.speed             + '\n' +
+                    'Timestamp: '         + position.timestamp                + '\n');
+            }
+
+            function onError(err) {
+                console.log(err);
+                alert('Unable to get current location.' +
+                    ' In general this means the device has no network connectivity and/or cannot get a satellite fix');
+            }
+        };
 
         //Appworks.Notifications.handler(function (notification) {
         //    $scope.$apply(self.notifications.push(notification));

@@ -225,6 +225,12 @@ var Appworks;
         __extends(AWDevice, _super);
         function AWDevice() {
             _super.apply(this, arguments);
+            this.cordova = device.cordova;
+            this.model = device.model;
+            this.platform = device.platform;
+            this.uuid = device.uuid;
+            this.version = device.version;
+            this.manufacturer = device.manufacturer;
         }
         return AWDevice;
     })(AWPlugin);
