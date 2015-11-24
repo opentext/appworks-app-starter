@@ -200,7 +200,8 @@ angular.module('starter.controllers', [])
         });
 
         self.getDeviceInfo = function () {
-            var device = new Appworks.AWDevice();
+            var device = new Appworks.AWDevice(),
+                alertManager = new Appworks.AWNotificationManager();
             var info = {
                 cordova: device.cordova,
                 model: device.model,
@@ -209,7 +210,7 @@ angular.module('starter.controllers', [])
                 version: device.version,
                 manufacturer: device.manufacturer
             };
-            alert(JSON.stringify(info));
+            alertManager.alert(JSON.stringify(info));
         };
 
         self.scanQRCode = function () {
@@ -244,7 +245,8 @@ angular.module('starter.controllers', [])
 
         self.openCamera = function () {
             var camera = new Appworks.AWCamera(function (dataUrl) {
-                $scope.$apply(self.imgSrc = dataUrl);
+                self.imgSrc = dataUrl
+                $scope.$apply();
             }, function (err) {
                 self.err = err;
                 $scope.$apply();
@@ -256,7 +258,8 @@ angular.module('starter.controllers', [])
 
         self.openGallery = function () {
             var gallery = new Appworks.AWCamera(function (dataUrl) {
-                $scope.$apply(self.imgSrc = dataUrl);
+                self.imgSrc = dataUrl;
+                $scope.$apply();
             }, function (err) {
                 self.err = err;
                 $scope.$apply();
@@ -266,14 +269,20 @@ angular.module('starter.controllers', [])
             gallery.openGallery();
         };
 
+        self.vibrate = function () {
+            var vibe = new Appworks.AWVibration();
+            vibe.vibrate(4000);
+        };
+
         self.getLocation = function () {
-            var geo = new Appworks.AWLocation(onSuccess, onError);
+            var geo = new Appworks.AWLocation(onSuccess, onError),
+                alertManager = new Appworks.AWNotificationManager();
 
             geo.getCurrentPosition();
 
             function onSuccess(position) {
                 console.log(position);
-                alert(
+                alertManager.alert(
                     'Latitude: '          + position.coords.latitude          + '\n' +
                     'Longitude: '         + position.coords.longitude         + '\n' +
                     'Altitude: '          + position.coords.altitude          + '\n' +
@@ -286,7 +295,7 @@ angular.module('starter.controllers', [])
 
             function onError(err) {
                 console.log(err);
-                alert('Unable to get current location.' +
+                alertManager.alert('Unable to get current location.' +
                     ' In general this means the device has no network connectivity and/or cannot get a satellite fix');
             }
         };
@@ -316,7 +325,7 @@ angular.module('starter.controllers', [])
         //};
     })
 
-    .controller('AuthCtrl', function ($scope) {
+    .controller('SyncCtrl', function ($scope) {
 
         var auth = new Appworks.Auth(onAuth, onAuth);
 

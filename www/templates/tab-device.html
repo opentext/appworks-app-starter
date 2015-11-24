@@ -16,9 +16,62 @@
         <div class="list">
 
             <div class="item item-button-right">
-                Show Device Information
-                <button class="button button-clear button-royal" ng-click="device.getDeviceInfo()">
-                    <i class="icon ion-ios-monitor-outline"></i>
+                Open Device Camera
+                <button class="button button-clear button-royal" ng-click="device.openCamera()">
+                    <i class="icon ion-ios-camera-outline"></i>
+                </button>
+            </div>
+
+            <div class="item item-button-right">
+                Open Photo Gallery
+                <button class="button button-clear button-royal" ng-click="device.openGallery()">
+                    <i class="icon ion-ios-albums-outline"></i>
+                </button>
+            </div>
+            <a class="item item-thumbnail-left" href="#" ng-show="device.imgSrc">
+                <img data-ng-src="{{device.imgSrc}}">
+                <p>This is the image you selected.</p>
+            </a>
+
+            <div class="item item-button-right">
+                Get current location
+                <button class="button button-clear button-royal" ng-click="device.getLocation()">
+                    <i class="icon ion-ios-location-outline"></i>
+                </button>
+            </div>
+
+            <div class="item item-button-right">
+                Show Acceleration and Compass
+                <button class="button button-clear button-royal" ng-click="device.showCompass()">
+                    <i class="icon ion-ios-navigate-outline"></i>
+                </button>
+            </div>
+
+            <div class="item item-button-right">
+                Record Audio
+                <button class="button button-clear button-royal" ng-click="device.recordAudio()">
+                    <i class="icon ion-ios-mic-outline"></i>
+                </button>
+            </div>
+
+            <div class="item item-button-right">
+                Playback Audio
+                <button class="button button-clear button-royal" ng-click="device.playAudio()">
+                    <i class="icon ion-ios-volume-high"></i>
+                </button>
+            </div>
+
+            <div class="item item-button-right">
+                Record Video
+                <button class="button button-clear button-royal" ng-click="device.recordVideo()">
+                    <i class="icon ion-ios-videocam-outline"></i>
+                </button>
+            </div>
+
+            <div class="item item-button-right">
+                Playback Video
+                <button class="button button-clear button-royal" ng-click="device.playVideo()">
+                    <i class="icon ion-ios-film-outline"></i>
                 </button>
             </div>
 
@@ -28,7 +81,6 @@
                     <i class="icon ion-ios-book-outline"></i>
                 </button>
             </div>
-
             <div class="item item-text-wrap" ng-show="device.qrScanResult">
                 {{device.qrScanResult}}
             </div>
@@ -47,54 +99,17 @@
             </a>
 
             <div class="item item-button-right">
-                Open Device Camera
-                <button class="button button-clear button-royal" ng-click="device.openCamera()">
-                    <i class="icon ion-ios-camera-outline"></i>
+                Vibrate the Device
+                <button class="button button-clear button-royal" ng-click="device.vibrate()">
+                    <i class="icon ion-ios-color-wand-outline"></i>
                 </button>
             </div>
 
             <div class="item item-button-right">
-                Open Device Gallery
-                <button class="button button-clear button-royal" ng-click="device.openGallery()">
-                    <i class="icon ion-ios-film-outline"></i>
+                Show Device Information
+                <button class="button button-clear button-royal" ng-click="device.getDeviceInfo()">
+                    <i class="icon ion-ios-monitor-outline"></i>
                 </button>
-            </div>
-
-            <a class="item item-thumbnail-left" href="#" ng-show="device.imgSrc">
-                <img data-ng-src="{{device.imgSrc}}">
-                <h2>Image</h2>
-                <p>This is the image you selected.</p>
-            </a>
-
-            <div class="item item-button-right">
-                Get current location
-                <button class="button button-clear button-royal" ng-click="device.getLocation()">
-                    <i class="icon ion-ios-navigate-outline"></i>
-                </button>
-            </div>
-
-            <ion-toggle ng-model="device.notificationsEnabled" toggle-class="toggle-royal">
-                Enable Notifications
-            </ion-toggle>
-            <div class="item item-button-right">
-                Get Notifications
-                <button class="button button-clear button-royal" ng-click="device.getNotifications()">
-                    <i class="icon ion-ios-bell-outline"></i>
-                </button>
-            </div>
-            <div class="item item-button-right">
-                Clear notifications
-                <button class="button button-clear button-royal" ng-click="device.clearNotifications()">
-                    <i class="icon ion-ios-close-outline"></i>
-                </button>
-            </div>
-
-            <div class="item" ng-show="device.err">
-                <p class="text-warning">{{device.err}}</p>
-            </div>
-
-            <div class="item" ng-show="device.notifications" ng-repeat="notification in device.notifications track by $index">
-                <pre>{{notification}}</pre>
             </div>
 
         </div>

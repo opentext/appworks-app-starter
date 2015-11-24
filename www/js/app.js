@@ -8,7 +8,7 @@
 angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
 
     .config(function($compileProvider){
-        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile|assets-library):|data:image\//);
+        $compileProvider.imgSrcSanitizationWhitelist(/^\s*(https?|file|blob|cdvfile|assets-library|tel):|data:image\//);
     })
 
     .run(function ($ionicPlatform) {
@@ -72,12 +72,12 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
                     }
                 }
             })
-            .state('tab.auth', {
-                url: '/auth',
+            .state('tab.sync', {
+                url: '/sync',
                 views: {
-                    'tab-auth': {
-                        templateUrl: 'templates/tab-auth.html',
-                        controller: 'AuthCtrl as auth'
+                    'tab-sync': {
+                        templateUrl: 'templates/tab-sync.html',
+                        controller: 'SyncCtrl as sync'
                     }
                 }
             })
