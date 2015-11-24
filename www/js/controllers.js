@@ -185,11 +185,21 @@ angular.module('starter.controllers', [])
         }
     })
 
-    .controller('DeviceCtrl', function ($scope) {
+    .controller('DeviceCtrl', function ($scope, $ionicModal) {
         var self = this;
 
         self.notifications = [];
         self.notificationsEnabled = true;
+
+        $ionicModal.fromTemplateUrl('templates/modals/device-motion.html', {
+            scope: $scope,
+            animation: 'slide-in-up'
+        }).then(function(modal) {
+            $scope.deviceMotionModal = modal;
+            $scope.hideDeviceMotionModal = function () {
+                $scope.deviceMotionModal.hide();
+            }
+        });
 
         $scope.$watch('device.notificationsEnabled', function (on) {
             if (on) {
@@ -237,6 +247,27 @@ angular.module('starter.controllers', [])
             }
 
             contacts.pickContact();
+        };
+
+        self.showCompass = function () {
+            // TODO implement using AWCompass and AWAccelerometer
+            $scope.deviceMotionModal.show();
+        };
+
+        self.recordAudio = function () {
+            // TODO implement using AWMediaCapture
+        };
+
+        self.playAudio = function () {
+            // TODO implement using AWMedia
+        };
+
+        self.recordVideo = function () {
+            // TODO implement using AWMediaCapture
+        };
+
+        self.playVideo = function () {
+          // TODO implement using AWMedia
         };
 
         function errorHandler(err) {
