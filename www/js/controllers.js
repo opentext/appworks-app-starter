@@ -216,10 +216,12 @@ angular.module('starter.controllers', [])
                 self.contactPickerResult = {
                     name: contact.name.formatted,
                     number: contact.phoneNumbers[0].value,
-                    photo: contact.photos[0].value
+                    photo: contact.photos && contact.photos[0].value
                 };
+                console.log('selected contact:', contact);
                 $scope.$apply();
             }
+
             contacts.pickContact();
         };
 
