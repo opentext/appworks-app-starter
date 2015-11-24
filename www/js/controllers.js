@@ -209,6 +209,24 @@ angular.module('starter.controllers', [])
             }
         };
 
+        self.openContactPicker = function () {
+            var contacts = new Appworks.AWContacts(onContactSuccess, errorHandler);
+
+            function onContactSuccess(contact) {
+                self.contactPickerResult = {
+                    name: contact.name.formatted,
+                    number: contact.phoneNumbers[0].value,
+                    photo: contact.photos[0].value
+                };
+                $scope.$apply();
+            }
+            contacts.pickContact();
+        };
+
+        function errorHandler(err) {
+            console.log(err);
+        }
+
         self.openCamera = function () {
             var camera = new Appworks.AWCamera(function (dataUrl) {
                 $scope.$apply(self.imgSrc = dataUrl);

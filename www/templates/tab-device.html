@@ -27,6 +27,18 @@
             </div>
 
             <div class="item item-button-right">
+                Choose a Contact
+                <button class="button button-clear button-royal" ng-click="device.openContactPicker()">
+                    <i class="icon ion-ios-person-outline"></i>
+                </button>
+            </div>
+            <a class="item item-thumbnail-left" href="#" ng-show="device.contactPickerResult">
+                <img data-ng-src="{{device.contactPickerResult.photo}}">
+                <h2>{{device.contactPickerResult.name}}</h2>
+                <p>{{device.contactPickerResult.number}}</p>
+            </a>
+
+            <div class="item item-button-right">
                 Open Device Camera
                 <button class="button button-clear button-royal" ng-click="device.openCamera()">
                     <i class="icon ion-ios-camera-outline"></i>
