@@ -32,7 +32,8 @@
                     <i class="icon ion-ios-person-outline"></i>
                 </button>
             </div>
-            <a class="item item-thumbnail-left" href="#" ng-show="device.contactPickerResult">
+            <a class="item item-thumbnail-left" ng-href="{{'tel:' + device.contactPickerResult.number}}"
+               ng-show="device.contactPickerResult">
                 <img data-ng-src="{{device.contactPickerResult.photo}}">
                 <h2>{{device.contactPickerResult.name}}</h2>
                 <p>{{device.contactPickerResult.number}}</p>
