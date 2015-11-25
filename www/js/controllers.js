@@ -275,19 +275,52 @@ angular.module('starter.controllers', [])
         }
 
         self.recordAudio = function () {
-            // TODO implement using AWMediaCapture
+            if ($scope.recordingInProgress) {
+                $scope.recording.stopRecord();
+                $scope.recordingInProgress = false;
+            } else {
+                $scope.recording = new Appworks.AWMedia('documents://recording.wav', onRecordSuccess, errorHandler);
+                $scope.recording.startRecord();
+                $scope.recordingInProgress = true;
+            }
         };
+
+        function onRecordSuccess(media) {
+            $scope.$apply();
+        }
 
         self.playAudio = function () {
-            // TODO implement using AWMedia
+            console.log($scope.recording);
+            var src = $scope.recording && $scope.recording.src;
+
+            if ($scope.playingHasStarted && $scope.playing) {
+                $scope.media.pause();
+                $scope.playing = false;
+            } else if ($scope.playingHasStarted) {
+                $scope.media.play();
+                $scope.playing = true;
+            } else {
+                if (!src) {
+                    console.log('playing a sample');
+                    src = 'https://api.soundcloud.com/tracks/205365019/download?client_id=02gUJC0hH2ct1EGOcYXQIzRFU91c72Ea&oauth_token=1-138878-53859839-4dcd0ce624b390';
+                }
+                $scope.media = new Appworks.AWMedia(src, onMediaEnded, errorHandler);
+                $scope.media.play();
+                $scope.playingHasStarted = true;
+                $scope.playing = true;
+            }
         };
+
+        function onMediaEnded() {
+            console.log('audio has ended');
+            $scope.playingHasStarted = false;
+            $scope.playing = false;
+            $scope.$apply();
+        }
 
         self.recordVideo = function () {
-            // TODO implement using AWMediaCapture
-        };
-
-        self.playVideo = function () {
-          // TODO implement using AWMedia
+            var recorder = new Appworks.AWMediaCapture(onRecordSuccess, errorHandler);
+            recorder.captureVideo();
         };
 
         function errorHandler(err) {
@@ -296,7 +329,7 @@ angular.module('starter.controllers', [])
 
         self.openCamera = function () {
             var camera = new Appworks.AWCamera(function (dataUrl) {
-                self.imgSrc = dataUrl
+                self.imgSrc = dataUrl;
                 $scope.$apply();
             }, function (err) {
                 self.err = err;

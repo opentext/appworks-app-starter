@@ -49,7 +49,12 @@
 
             <div class="item item-button-right">
                 Record Audio
-                <button class="button button-clear button-royal" ng-click="device.recordAudio()">
+                <button ng-class="{
+                    'button button-clear': true,
+                     'button-royal': !recordingInProgress,
+                      'button-assertive': recordingInProgress
+                     }"
+                        ng-click="device.recordAudio()">
                     <i class="icon ion-ios-mic-outline"></i>
                 </button>
             </div>
@@ -57,7 +62,9 @@
             <div class="item item-button-right">
                 Playback Audio
                 <button class="button button-clear button-royal" ng-click="device.playAudio()">
-                    <i class="icon ion-ios-volume-high"></i>
+                    <i class="icon ion-ios-volume-high" ng-show="!playingHasStarted"></i>
+                    <i class="icon ion-ios-pause-outline" ng-show="playingHasStarted && playing"></i>
+                    <i class="icon ion-ios-play-outline" ng-show="playingHasStarted && !playing"></i>
                 </button>
             </div>
 
@@ -65,13 +72,6 @@
                 Record Video
                 <button class="button button-clear button-royal" ng-click="device.recordVideo()">
                     <i class="icon ion-ios-videocam-outline"></i>
-                </button>
-            </div>
-
-            <div class="item item-button-right">
-                Playback Video
-                <button class="button button-clear button-royal" ng-click="device.playVideo()">
-                    <i class="icon ion-ios-film-outline"></i>
                 </button>
             </div>
 
