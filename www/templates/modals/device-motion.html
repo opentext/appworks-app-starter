@@ -1,9 +1,48 @@
 <ion-modal-view>
-    <ion-header-bar>
-        <h1 class="title">My Modal title</h1>
-    </ion-header-bar>
     <ion-content>
-        Hello!
+        <div class="list">
+            <div class="item item-text-wrap">
+                <h1 ng-if="currentHeading.magneticHeading >= 0 && currentHeading.magneticHeading < 45">
+                    N
+                </h1>
+                <h1 ng-if="currentHeading.magneticHeading >= 45 && currentHeading.magneticHeading < 90">
+                    NE
+                </h1>
+                <h1 ng-if="currentHeading.magneticHeading >= 90 && currentHeading.magneticHeading < 135">
+                    E
+                </h1>
+                <h1 ng-if="currentHeading.magneticHeading >= 135 && currentHeading.magneticHeading < 180">
+                    SE
+                </h1>
+                <h1 ng-if="currentHeading.magneticHeading >= 180 && currentHeading.magneticHeading < 225">
+                    S
+                </h1>
+                <h1 ng-if="currentHeading.magneticHeading >= 225 && currentHeading.magneticHeading < 270">
+                    SW
+                </h1>
+                <h1 ng-if="currentHeading.magneticHeading >= 270 && currentHeading.magneticHeading < 315">
+                    W
+                </h1>
+                <h1 ng-if="currentHeading.magneticHeading >= 315 && currentHeading.magneticHeading < 360">
+                    NW
+                </h1>
+            </div>
+
+            <div class="item item-text-wrap">
+                <p>
+                    acceleration:
+                </p>
+                <p>
+                    x-axis: {{currentAcceleration.x}}
+                </p>
+                <p>
+                    y-axis: {{currentAcceleration.y}}
+                </p>
+                <p>
+                    z-axis: {{currentAcceleration.z}}
+                </p>
+            </div>
+        </div>
     </ion-content>
     <ion-footer-bar align-title="left">
         <div class="buttons">

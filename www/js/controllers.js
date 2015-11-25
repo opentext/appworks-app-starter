@@ -197,6 +197,12 @@ angular.module('starter.controllers', [])
         }).then(function(modal) {
             $scope.deviceMotionModal = modal;
             $scope.hideDeviceMotionModal = function () {
+                $scope.accelerometer.clearWatch($scope.deviceMotionWatchId);
+                $scope.accelerometer = null;
+
+                $scope.compass.clearWatch($scope.deviceOrientationWatchId);
+                $scope.compass = null;
+
                 $scope.deviceMotionModal.hide();
             }
         });
@@ -251,8 +257,22 @@ angular.module('starter.controllers', [])
 
         self.showCompass = function () {
             // TODO implement using AWCompass and AWAccelerometer
+            $scope.accelerometer = new Appworks.AWAccelerometer(accelerationUpdate, errorHandler);
+            $scope.compass = new Appworks.AWCompass(compassUpdate, errorHandler);
             $scope.deviceMotionModal.show();
+            $scope.deviceMotionWatchId = $scope.accelerometer.watchAcceleration();
+            $scope.deviceOrientationWatchId = $scope.compass.watchHeading();
         };
+
+        function compassUpdate(heading) {
+            $scope.currentHeading = heading;
+            $scope.$apply();
+        }
+
+        function accelerationUpdate(acceleration) {
+            $scope.currentAcceleration = acceleration;
+            $scope.$apply();
+        }
 
         self.recordAudio = function () {
             // TODO implement using AWMediaCapture
