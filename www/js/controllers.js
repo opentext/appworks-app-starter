@@ -102,28 +102,24 @@ angular.module('starter.controllers', [])
 
         self.key = 'myKey';
         self.data = 1234;
+        self.cache = new Appworks.AWCache();
 
         self.setItem = function (key, data) {
             self.data = null;
             self.cacheData = null;
-            appworks.cache.setItem(key, data);
+            self.cache.setItem(key, data);
         };
 
         self.getItem = function (key) {
-            appworks.cache.getItem(key, function (data) {
-                if (!data) {
-                    alert('This key does not exist in the cache');
-                }
-                self.cacheData = data;
-            });
+            self.cacheData = self.cache.getItem(key);
         };
 
         self.clear = function () {
             self.cacheData = null;
             self.key = null;
             self.data = null;
-            appworks.cache.clear();
-            self.$applyAsync();
+            self.cache.clear();
+            $scope.$applyAsync();
         };
     })
 
