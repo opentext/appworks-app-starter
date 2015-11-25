@@ -119,7 +119,6 @@ angular.module('starter.controllers', [])
             self.key = null;
             self.data = null;
             self.cache.clear();
-            $scope.$applyAsync();
         };
     })
 
