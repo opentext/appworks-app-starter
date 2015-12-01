@@ -378,42 +378,44 @@ angular.module('starter.controllers', [])
                     ' In general this means the device has no network connectivity and/or cannot get a satellite fix');
             }
         };
-
-        //Appworks.Notifications.handler(function (notification) {
-        //    $scope.$apply(self.notifications.push(notification));
-        //});
-
-        self.clearNotifications = function () {
-            self.notifications = [];
-        };
-
-        //self.stopNotifications = function () {
-        //    appworks.notifications.off();
-        //};
-
-        //self.enableNotifications = function () {
-        //    appworks.notifications.on();
-        //};
-
-        self.getNotifications = function () {
-            self.syncNotifications();
-        };
-
-        //self.syncNotifications = function () {
-        //    $scope.$applyAsync(self.notifications = appworks.notifications.get());
-        //};
     })
 
     .controller('SyncCtrl', function ($scope) {
 
-        var auth = new Appworks.Auth(onAuth, onAuth);
+        var auth = new Appworks.Auth(onAuth, onAuth),
+            notificationManager = new Appworks.AWNotificationManager(),
+            alertManager = new Appworks.AWNotificationManager();
 
         function onAuth(data) {
             console.log(data);
             $scope.$apply($scope.response = data.data);
         }
 
+        function errorHandler(err) {
+            console.log(err);
+        }
+
         this.authenticate = function () {
             auth.authenticate();
         };
+
+        this.getNotifications = function () {
+            notificationManager.getNotifications(function (notifications) {
+                console.log(notifications);
+                $scope.notifications = notifications;
+                $scope.$apply();
+            });
+        };
+
+        $scope.$watch('sync.notificationsEnabled', function (enabled) {
+            if (enabled) {
+                notificationManager.enablePushNotifications(function (notification) {
+                    console.log(notification);
+                    alertManager.alert(JSON.stringify(notification));
+                }, errorHandler);
+            } else {
+                notificationManager.disablePushNotifications();
+            }
+        });
+
     });

@@ -29,12 +29,13 @@
         </div>
 
         <div class="list">
-            <ion-toggle ng-model="device.notificationsEnabled" toggle-class="toggle-royal">
+            <ion-toggle ng-model="sync.notificationsEnabled" toggle-class="toggle-royal">
                 Enable Notifications
             </ion-toggle>
             <div class="item item-text-wrap">
                 <p>
-                    Opt-in or out of receiving notifications for this app.
+                    Opt-in or out of receiving notifications for this app. When this is enabled, new notifications
+                    will be automatically pushed to your app.
                 </p>
             </div>
         </div>
@@ -48,26 +49,11 @@
             </div>
             <div class="item item-text-wrap">
                 <p>
-                    Retrieve unread notifications for this app.
+                    Manually retrieve notifications for this app.
                 </p>
             </div>
-            <div class="item" ng-show="sync.notifications" ng-repeat="notification in sync.notifications track by $index">
+            <div class="item" ng-show="notifications" ng-repeat="notification in notifications">
                 <pre>{{notification}}</pre>
-            </div>
-        </div>
-
-        <div class="list">
-            <div class="item item-button-right">
-                Clear notifications
-                <button class="button button-clear button-royal" ng-click="sync.clearNotifications()">
-                    <i class="icon ion-ios-close-outline"></i>
-                </button>
-            </div>
-            <div class="item item-text-wrap">
-                <p>
-                    Clear notifications from the current app. Note that this does not dismiss notifications
-                    within the client.
-                </p>
             </div>
         </div>
 

@@ -374,6 +374,15 @@ var Appworks;
         AWNotificationManager.prototype.prompt = function (message, promptCallback, title, buttonLabels, defaultText) {
             navigator.notification.prompt(message, promptCallback, title, buttonLabels, defaultText);
         };
+        AWNotificationManager.prototype.enablePushNotifications = function (handler, errorHandler) {
+            cordova.exec(handler, errorHandler, 'AWNotificationManager', 'enablePushNotifications', []);
+        };
+        AWNotificationManager.prototype.disablePushNotifications = function () {
+            cordova.exec(null, null, 'AWNotificationManager', 'disablePushNotifications', []);
+        };
+        AWNotificationManager.prototype.getNotifications = function (handler, errorHandler) {
+            cordova.exec(handler, errorHandler, 'AWNotificationManager', 'getPushNotifications', []);
+        };
         return AWNotificationManager;
     })(AWPlugin);
     Appworks.AWNotificationManager = AWNotificationManager;
@@ -391,8 +400,33 @@ var Appworks;
     var AWOfflineManager = (function (_super) {
         __extends(AWOfflineManager, _super);
         function AWOfflineManager() {
-            _super.apply(this, arguments);
+            document.addEventListener('online', this.updateNetworkStatusToOnline);
+            document.addEventListener('online', this.updateNetworkStatusToOffline);
+            this.idCounter = 0;
+            _super.call(this, function () { }, function () { });
         }
+        AWOfflineManager.prototype.updateNetworkStatusToOnline = function () {
+            this.cache = new AWCache();
+            this.online = true;
+            this.offline = false;
+            this.status = 'online';
+        };
+        AWOfflineManager.prototype.updateNetworkStatusToOffline = function () {
+            this.offline = true;
+            this.online = false;
+            this.status = 'offline';
+        };
+        AWOfflineManager.prototype.defer = function (eventName, args) {
+            var eventId = ++this.idCounter;
+            return eventId;
+        };
+        AWOfflineManager.prototype.processQueue = function () {
+        };
+        AWOfflineManager.prototype.getQueue = function () {
+        };
+        AWOfflineManager.prototype.networkStatus = function () {
+            return this.status;
+        };
         return AWOfflineManager;
     })(AWPlugin);
     Appworks.AWOfflineManager = AWOfflineManager;
