@@ -122,61 +122,64 @@ angular.module('starter.controllers', [])
         };
     })
 
-    .controller('OfflineCtrl', function ($scope, $timeout) {
+    .controller('OfflineCtrl', function ($scope, $timeout, $http) {
         var self = this,
-            url = 'https://randomuser.me/api/',
-            options1 = {eventListener: 'myEvent1', method: 'GET'},
-            options2 = {eventListener: 'myEvent2', method: 'GET'},
-            options3 = {eventListener: 'myEvent3', method: 'GET'};
+            offlineManager = new Appworks.AWOfflineManager({preserveEvents: true});
 
         self.users = [];
+        self.defer = makeRequest;
+        self.offlineEventId = null;
 
-        self.queue = function (options) {
-            self.err = null;
-            if (options) {
-                appworks.offline.queue(options.url, options.options).then(options.success, options.error);
+        self.defer = function () {
+            // want to show that arguments are preserved, so I will call makeRequest with a url I define in here
+            // when the offline event is processed the arguments I tried to call makeRequest with will be preserved.
+            var url = 'https://randomuser.me/api/';
+            makeRequest(url);
+        };
+
+        // we add an event listener outside any inner functions so that if the device turns completely off and
+        // on again, as soon as this controller is loaded this event listener will be registered.
+        //
+        // there will be a 5 second delay between when the appworksjs.processingDeferredQueue event gets fired and
+        // when the processing takes place.
+        //
+        // if there is a custom event (e.g. via defer()) in that deferred queue, an event listener
+        // function should be registered here or earlier to ensure the event gets processed.
+        // this is the same event listener we registered with defer() on line 163
+        document.addEventListener('makeRequestEv', gotDeferred);
+
+        function gotDeferred(data) {
+            // the device is online now so we try to make the request again using the original arguments.
+            console.log(data);
+            var url = JSON.parse(data.detail)[0];
+            makeRequest(url);
+        }
+
+        function makeRequest(url) {
+            // if the device is online, we make the request right away
+            // otherwise, we queue the request to be processed later, and preserve any arguments that this method
+            // was called with
+            if (offlineManager.networkStatus().online) {
+                // make the request
+                $http.get(url).then(addUser, errorFn);
+                // we set up offlineManager to remove events manually by providing {preserveEvents: true}, so now
+                // that we have made the request, we remove the event from the deferred queue using the id passed
+                // back to us when we called defer()
+                offlineManager.cancel(self.offlineEventId);
             } else {
-                appworks.offline.queue(url, options1).then(successFn, errorFn);
+                self.offlineEventId = offlineManager.defer('makeRequestEv', arguments);
+                console.log(self.offlineEventId);
             }
-        };
-
-        self.queueMultiple = function () {
-            self.users = [];
-            $timeout(function () {
-                self.queue({url: url, options: options1, success: successFn, error: errorFn});
-            }, 1000);
-            $timeout(function () {
-                self.queue({url: url, options: options2, success: successFn2, error: errorFn});
-            }, 1000);
-            $timeout(function () {
-                self.queue({url: url, options: options3, success: successFn3, error: errorFn});
-            }, 1000);
-        };
-
-        function addUser(user) {
-            $scope.$apply(self.users.push(user));
         }
 
-        function successFn(res) {
-            res = JSON.parse(res.data);
-            addUser(res.results[0]);
-            appworks.offline.removeEventHandler('myEvent1', successFn);
-        }
-
-        function successFn2(res) {
-            res = JSON.parse(res.data);
-            addUser(res.results[0]);
-            appworks.offline.removeEventHandler('myEvent2', successFn2);
-        }
-
-        function successFn3(res) {
-            res = JSON.parse(res.data);
-            addUser(res.results[0]);
-            appworks.offline.removeEventHandler('myEvent3', successFn3);
+        function addUser(response) {
+            var user = response.data.results[0];
+            self.users.push(user);
+            console.log(response);
         }
 
         function errorFn(err) {
-            $scope.$apply(self.err = err);
+            self.err = err;
         }
     })
 
@@ -251,7 +254,6 @@ angular.module('starter.controllers', [])
         };
 
         self.showCompass = function () {
-            // TODO implement using AWCompass and AWAccelerometer
             $scope.accelerometer = new Appworks.AWAccelerometer(accelerationUpdate, errorHandler);
             $scope.compass = new Appworks.AWCompass(compassUpdate, errorHandler);
             $scope.deviceMotionModal.show();

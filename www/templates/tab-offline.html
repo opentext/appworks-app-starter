@@ -6,8 +6,9 @@
             </div>
             <div class="item item-text-wrap">
                 <p>
-                    AppWorks JS allows you to work offline by storing http requests and firing them once the device
-                    comes back online. This example will send a request to fetch random user data and display it below.
+                    AppWorks JS allows you to work offline by storing user intention while the device is offline and
+                    providing you with the ability to reconstruct that intention when the device comes back online.
+                    This example will send a request to fetch random user data and display it below.
                 </p>
             </div>
         </div>
@@ -32,12 +33,8 @@
 
         <div class="list">
 
-            <button class="button button-block button-royal" ng-click="offline.queue()">
-                Make a Single Request
-            </button>
-
-            <button class="button button-block button-royal" ng-click="offline.queueMultiple()">
-                Make a Series of Requests
+            <button class="button button-full button-royal" ng-click="offline.defer()">
+                Tap to make an offline request
             </button>
 
             <a class="item item-avatar" href="#" ng-show="offline.users.length > 0" ng-repeat="user in offline.users">
