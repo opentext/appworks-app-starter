@@ -102,7 +102,7 @@ angular.module('starter.controllers', [])
 
         self.key = 'myKey';
         self.data = 1234;
-        self.cache = new Appworks.AWCache();
+        self.cache = new Appworks.AWCache({usePersistentStorage: true});
 
         self.setItem = function (key, data) {
             self.data = null;
