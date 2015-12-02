@@ -140,10 +140,10 @@ angular.module('starter.controllers', [])
         // we add an event listener outside any inner functions so that if the device turns completely off and
         // on again, as soon as this controller is loaded this event listener will be registered.
         //
-        // there will be a 5 second delay between when the appworksjs.processingDeferredQueue event gets fired and
-        // when the processing takes place.
-        //
-        // if there is a custom event (e.g. via defer()) in that deferred queue, an event listener
+        // there will be a 5 second delay between when the device comes back online and the 'makeRequestEv' event gets
+        // fired
+
+        // an event listener
         // function should be registered here or earlier to ensure the event gets processed.
         // this is the same event listener we registered with defer() on line 163
         document.addEventListener('makeRequestEv', gotDeferred);
