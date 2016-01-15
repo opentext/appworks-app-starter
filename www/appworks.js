@@ -42,9 +42,24 @@ var Appworks;
             var _this = this;
             cordova.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWAuth', 'authenticate');
         };
+        Auth.prototype.gateway = function (successHandler, errorHandler) {
+            cordova.exec(successHandler, errorHandler, 'AWAuth', 'gateway');
+        };
         return Auth;
     })(AWPlugin);
     Appworks.Auth = Auth;
+    var AWAppManager = (function (_super) {
+        __extends(AWAppManager, _super);
+        function AWAppManager() {
+            _super.apply(this, arguments);
+        }
+        AWAppManager.prototype.closeActiveApp = function () {
+            var _this = this;
+            cordova.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWAppManager', 'closeActiveApp');
+        };
+        return AWAppManager;
+    })(AWPlugin);
+    Appworks.AWAppManager = AWAppManager;
     var AWCamera = (function (_super) {
         __extends(AWCamera, _super);
         function AWCamera() {
@@ -79,6 +94,26 @@ var Appworks;
         return AWCamera;
     })(AWPlugin);
     Appworks.AWCamera = AWCamera;
+    var AWComponent = (function (_super) {
+        __extends(AWComponent, _super);
+        function AWComponent() {
+            _super.apply(this, arguments);
+        }
+        AWComponent.prototype.open = function (successHandler, errorHandler, args) {
+            cordova.exec(successHandler, errorHandler, 'AWComponent', 'open', args);
+        };
+        AWComponent.prototype.list = function (successHandler, errorHandler, args) {
+            cordova.exec(successHandler, errorHandler, 'AWComponent', 'list', args);
+        };
+        AWComponent.prototype.check = function (successHandler, errorHandler, args) {
+            cordova.exec(successHandler, errorHandler, 'AWComponent', 'check', args);
+        };
+        AWComponent.prototype.close = function (successHandler, errorHandler, args) {
+            cordova.exec(successHandler, errorHandler, 'AWComponent', 'close', args);
+        };
+        return AWComponent;
+    })(AWPlugin);
+    Appworks.AWComponent = AWComponent;
     var Finder = (function (_super) {
         __extends(Finder, _super);
         function Finder() {
@@ -151,6 +186,16 @@ var Appworks;
             var _this = this;
             var args = [filename, options];
             cordova.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWSecureStorage', 'retrieve', args);
+        };
+        SecureStorage.prototype.remove = function (target) {
+            var _this = this;
+            var args = [target];
+            cordova.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWSecureStorage', 'removeFile', args);
+        };
+        SecureStorage.prototype.fileExistsAtPath = function (target) {
+            var _this = this;
+            var args = [target];
+            cordova.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWSecureStorage', 'fileExistsAtPath', args);
         };
         return SecureStorage;
     })(AWPlugin);
@@ -497,7 +542,6 @@ var Appworks;
                 entry.file(gotFile, fail);
             }
             function gotFile(file) {
-                console.log(file);
                 readAsText(file);
             }
             function readAsText(file) {
@@ -524,14 +568,12 @@ var Appworks;
                 fileSystem.root.getFile('appworksjs.cache.json', { create: true, exclusive: false }, gotFileEntry, fail);
             }
             function gotFileEntry(fileEntry) {
-                console.log(fileEntry);
                 fileEntry.createWriter(gotFileWriter, fail);
             }
             function gotFileWriter(writer) {
                 writer.onwriteend = function () {
                     console.info('cache data backed up successfully');
                 };
-                console.log(data);
                 writer.write(data);
             }
             function fail(error) {

@@ -89,6 +89,17 @@ angular.module('starter.controllers', [])
             storage.retrieve('file.jpg');
         };
 
+        self.fileExistsAtPath = function (filename) {
+            var storage = new Appworks.SecureStorage(fileExists, errorHandler);
+
+            function fileExists(itDoes) {
+                alert(itDoes);
+                $scope.$apply();
+            }
+
+            storage.fileExistsAtPath(filename || 'file.jpg');
+        };
+
         function errorHandler(err) {
             console.log(err);
             self.loading = false;
