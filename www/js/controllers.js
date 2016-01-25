@@ -401,7 +401,7 @@ angular.module('starter.controllers', [])
 
         function onAuth(data) {
             console.log(data);
-            $scope.$apply($scope.response = data.data);
+            $scope.$apply($scope.response = data.authData);
         }
 
         function errorHandler(err) {
@@ -410,6 +410,12 @@ angular.module('starter.controllers', [])
 
         this.authenticate = function () {
             auth.authenticate();
+        };
+
+        this.getAuthResponse = function () {
+            var auth = new Appworks.Auth(onAuth, onAuth);
+            $scope.response = null;
+            auth.getAuthResponse();
         };
 
         this.getNotifications = function () {

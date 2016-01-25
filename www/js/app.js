@@ -27,6 +27,13 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services'])
         });
     })
 
+    .run(function () {
+        document.addEventListener('deviceready', function () {
+            // if you want to verify the deviceready event is getting fired, enable the line below
+            //alert('device is ready');
+        });
+    })
+
     .config(function ($stateProvider, $urlRouterProvider) {
 
         // Ionic uses AngularUI Router which uses the concept of states

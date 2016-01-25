@@ -29,6 +29,21 @@
         </div>
 
         <div class="list">
+            <div class="item item-button-right">
+                Get Auth Response
+                <button class="button button-clear button-royal" ng-click="sync.getAuthResponse()">
+                    <i class="icon ion-ios-at"></i>
+                </button>
+            </div>
+            <div class="item item-text-wrap">
+                <p>Get the last auth response object without sending a reauthentication request.</p>
+            </div>
+            <div class="item item-text-wrap" ng-show="response">
+                {{response}}
+            </div>
+        </div>
+
+        <div class="list">
             <ion-toggle ng-model="sync.notificationsEnabled" toggle-class="toggle-royal">
                 Enable Notifications
             </ion-toggle>
