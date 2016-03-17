@@ -397,7 +397,10 @@ angular.module('starter.controllers', [])
 
         var auth = new Appworks.Auth(onAuth, onAuth),
             notificationManager = new Appworks.AWNotificationManager(),
-            alertManager = new Appworks.AWNotificationManager();
+            alertManager = new Appworks.AWNotificationManager(),
+            headerBar = new Appworks.AWHeaderBar(),
+            headerBarIsShowing = true,
+            backButtonIsShowing = true;
 
         function onAuth(data) {
             console.log(data);
@@ -407,6 +410,26 @@ angular.module('starter.controllers', [])
         function errorHandler(err) {
             console.log(err);
         }
+
+        this.updateHeaderBarTitle = function () {
+            headerBar.setHeader({
+                title: 'Updated title -- ' + Math.random() * 100
+            });
+        };
+
+        this.toggleHeaderBar = function () {
+            headerBarIsShowing = !headerBarIsShowing;
+            headerBar.setHeader({
+                visible: headerBarIsShowing
+            });
+        };
+
+        this.toggleBackButton = function () {
+            backButtonIsShowing = !backButtonIsShowing;
+            headerBar.setHeader({
+                backButtonVisible: backButtonIsShowing
+            });
+        };
 
         this.authenticate = function () {
             auth.authenticate();
