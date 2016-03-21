@@ -411,7 +411,7 @@ angular.module('starter.controllers', [])
         }
 
         this.updateHeaderBarTitle = function () {
-            headerBar.setHeader('Updated title -- ' + Math.random() * 100);
+            headerBar.setHeader('Updated title -- ' + Math.random() * 100, 'show');
         };
 
         this.toggleBackAction = function () {
