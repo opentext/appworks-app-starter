@@ -411,12 +411,16 @@ angular.module('starter.controllers', [])
         }
 
         this.updateHeaderBarTitle = function () {
-            headerBar.setHeader('Updated title -- ' + Math.random() * 100, 'show');
+            headerBar.setHeader({
+                title: 'Updated title: ' + Math.round(Math.random() * 100)
+            });
         };
 
-        this.toggleBackAction = function () {
+        this.toggleBackButton = function () {
             backButtonIsShowing = !backButtonIsShowing;
-            headerBar.setHeader(null, backButtonIsShowing);
+            headerBar.setHeader({
+                backButtonVisible: backButtonIsShowing
+            });
         };
 
         this.authenticate = function () {
