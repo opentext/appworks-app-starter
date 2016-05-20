@@ -100,6 +100,16 @@ angular.module('starter.controllers', [])
             storage.fileExistsAtPath(filename || 'file.jpg');
         };
 
+        self.openWebView = function () {
+            var webview = new Appworks.AWWebView(webViewWasClosed, errorHandler);
+
+            webview.open('http://www.nytimes.com/2016/05/20/us/politics/donald-trump-immigration.html?_r=0');
+
+            function webViewWasClosed() {
+                console.log('webview was closed by user');
+            }
+        };
+
         function errorHandler(err) {
             console.log(err);
             self.loading = false;
