@@ -101,9 +101,10 @@ angular.module('starter.controllers', [])
         };
 
         self.openWebView = function () {
+            var url = 'http://www.nytimes.com/2016/05/20/us/politics/donald-trump-immigration.html?_r=0';
             var webview = new Appworks.AWWebView(webViewWasClosed, errorHandler);
 
-            webview.open('http://www.nytimes.com/2016/05/20/us/politics/donald-trump-immigration.html?_r=0');
+            webview.open(url, '_blank', 'location=no');
 
             function webViewWasClosed() {
                 console.log('webview was closed by user');
