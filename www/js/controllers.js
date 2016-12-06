@@ -228,9 +228,9 @@ angular.module('starter.controllers', [])
         });
 
         $scope.$watch('device.notificationsEnabled', function (on) {
-            if (on) {
+            if (on && angular.isFunction(self.enableNotifications)) {
                 self.enableNotifications();
-            } else {
+            } else if (angular.isFunction(self.stopNotifications)) {
                 self.stopNotifications();
             }
         });

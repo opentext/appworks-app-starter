@@ -189,6 +189,48 @@
         LocalFileSystem[LocalFileSystem["TEMPORARY"] = 1] = "TEMPORARY";
     })(LocalFileSystem || (LocalFileSystem = {}));
 
+/// <reference path="../../typings/globals/cordova/plugins/filetransfer/index.d.ts"/>
+    var MockFileTransfer = (function () {
+        function MockFileTransfer() {
+        }
+        MockFileTransfer.prototype.upload = function (fileURL, server, successCallback, errorCallback, options, trustAllHosts) {
+        };
+        MockFileTransfer.prototype.download = function (source, target, successCallback, errorCallback, trustAllHosts, options) {
+        };
+        MockFileTransfer.prototype.abort = function () {
+        };
+        return MockFileTransfer;
+    }());
+
+    var Util = (function () {
+        function Util() {
+        }
+        Util.noop = function () {
+        };
+        return Util;
+    }());
+
+    var MockLocalStorage = (function () {
+        function MockLocalStorage() {
+        }
+        MockLocalStorage.prototype.getItem = function (key) {
+            return null;
+        };
+        MockLocalStorage.prototype.setItem = function (key, value) {
+            return null;
+        };
+        MockLocalStorage.prototype.removeItem = function (key) {
+            return null;
+        };
+        MockLocalStorage.prototype.clear = function () {
+            return null;
+        };
+        MockLocalStorage.prototype.key = function (index) {
+            return null;
+        };
+        return MockLocalStorage;
+    }());
+
 /// <reference path='../typings/globals/cordova/index.d.ts'/>
 /// <reference path='../typings/globals/cordova/plugins/device/index.d.ts'/>
 /// <reference path='../typings/globals/cordova/plugins/media/index.d.ts'/>
@@ -196,68 +238,122 @@
 /// <reference path='../typings/globals/cordova/plugins/inappbrowser/index.d.ts'/>
 /// <reference path='../typings/globals/cordova/plugins/filesystem/index.d.ts'/>
 /// <reference path='../typings/globals/cordova/plugins/mediacapture/index.d.ts'/>
+/// <reference path='../typings/globals/cordova/plugins/camera/index.d.ts'/>
     var AWProxy = (function () {
         function AWProxy() {
         }
         AWProxy.exec = function (successHandler, errorHandler, name, method, args) {
-            if (cordova) {
+            if (typeof cordova !== 'undefined') {
                 cordova.exec(successHandler, errorHandler, name, method, args);
             }
-            else if (__aw_plugin_proxy) {
+            else if (typeof __aw_plugin_proxy !== 'undefined') {
                 __aw_plugin_proxy.exec(successHandler, errorHandler, name, method, args);
             }
             else {
                 console.error('No proxy objects defined - tried [Cordova, __aw_plugin_proxy]');
+                if (typeof errorHandler === 'function') {
+                    errorHandler('No proxy objects defined - tried [Cordova, __aw_plugin_proxy]');
+                }
             }
         };
         AWProxy.accelerometer = function () {
-            return navigator.accelerometer || new MockAccelerometer();
+            return typeof 'navigator' !== undefined ? navigator.accelerometer : new MockAccelerometer();
         };
         AWProxy.camera = function () {
-            return navigator.camera || new MockCamera();
+            return typeof navigator !== 'undefined' ? navigator.camera : new MockCamera();
+        };
+        AWProxy.Camera = function () {
+            return (typeof Camera !== 'undefined') ? Camera : {
+                DestinationType: {
+                    DATA_URL: null,
+                    FILE_URI: null,
+                    NATIVE_URI: null,
+                },
+                Direction: {
+                    BACK: null,
+                    FRONT: null,
+                },
+                EncodingType: {
+                    JPEG: null,
+                    PNG: null,
+                },
+                MediaType: {
+                    PICTURE: null,
+                    VIDEO: null,
+                    ALLMEDIA: null,
+                },
+                PictureSourceType: {
+                    PHOTOLIBRARY: null,
+                    CAMERA: null,
+                    SAVEDPHOTOALBUM: null,
+                },
+                // Used only on iOS
+                PopoverArrowDirection: {
+                    ARROW_UP: null,
+                    ARROW_DOWN: null,
+                    ARROW_LEFT: null,
+                    ARROW_RIGHT: null,
+                    ARROW_ANY: null
+                }
+            };
         };
         AWProxy.compass = function () {
-            return navigator.compass || new MockCompass();
+            return typeof navigator !== 'undefined' ? navigator.compass : new MockCompass();
         };
         AWProxy.connection = function () {
-            return navigator.connection || new MockConnection();
+            return typeof navigator !== 'undefined' ? navigator.connection : new MockConnection();
         };
         AWProxy.Connection = function () {
-            return Connection || {
-                    UNKNOWN: null,
-                    ETHERNET: null,
-                    WIFI: null,
-                    CELL_2G: null,
-                    CELL_3G: null,
-                    CELL_4G: null,
-                    CELL: null,
-                    NONE: null
-                };
+            return (typeof Connection !== 'undefined') ? Connection : {
+                UNKNOWN: null,
+                ETHERNET: null,
+                WIFI: null,
+                CELL_2G: null,
+                CELL_3G: null,
+                CELL_4G: null,
+                CELL: null,
+                NONE: null
+            };
         };
         AWProxy.contacts = function () {
-            return navigator.contacts || new MockContacts();
+            return typeof navigator !== 'undefined' ? navigator.contacts : new MockContacts();
         };
         AWProxy.device = function () {
-            return device || {
-                    cordova: null,
-                    model: null,
-                    platform: null,
-                    uuid: null,
-                    version: null,
-                    manufacturer: null,
-                    isVirtual: null,
-                    serial: null,
-                    capture: (navigator.device && navigator.device.capture) || new MockCapture()
-                };
+            var _device = (typeof device !== 'undefined') ? device : {
+                cordova: null,
+                model: null,
+                platform: null,
+                uuid: null,
+                version: null,
+                manufacturer: null,
+                isVirtual: null,
+                serial: null,
+                capture: null
+            };
+            if (typeof navigator !== 'undefined' && navigator.device && navigator.device.capture) {
+                _device.capture = navigator.device.capture;
+            }
+            else {
+                _device.capture = new MockCapture();
+            }
+            return _device;
+        };
+        AWProxy.document = function () {
+            return (typeof document !== 'undefined') ? document : {
+                addEventListener: Util.noop
+            };
+        };
+        AWProxy.filetransfer = function () {
+            return (typeof FileTransfer !== 'undefined') ? new FileTransfer() : new MockFileTransfer();
         };
         AWProxy.geolocation = function () {
-            return navigator.geolocation || new MockGeolocation();
+            return (typeof navigator !== 'undefined') ? navigator.geolocation : new MockGeolocation();
         };
         AWProxy.localFileSystem = function () {
             return LocalFileSystem;
         };
         AWProxy.media = function (src, successHandler, errorHandler, statusChangeHandler) {
-            if (Media) {
+            if (typeof Media !== 'undefined') {
                 return new Media(src, successHandler, errorHandler, statusChangeHandler);
             }
             else {
@@ -265,7 +361,7 @@
             }
         };
         AWProxy.notification = function () {
-            return navigator.notification || new MockNotification();
+            return (typeof navigator !== 'undefined') ? navigator.notification : new MockNotification();
         };
         AWProxy.requestFileSystem = function (type, size, successCallback, errorCallback) {
             if (window.requestFileSystem) {
@@ -273,7 +369,7 @@
             }
         };
         AWProxy.vibrate = function (time) {
-            if (navigator.vibrate) {
+            if (typeof navigator !== 'undefined' && navigator.vibrate) {
                 return navigator.vibrate(time);
             }
             else {
@@ -281,12 +377,15 @@
             }
         };
         AWProxy.webview = function () {
-            if (cordova) {
+            if (typeof cordova !== 'undefined') {
                 return cordova.InAppBrowser;
             }
             else {
                 return (new MockWebview());
             }
+        };
+        AWProxy.storage = function () {
+            return (typeof window !== 'undefined') ? window.localStorage : new MockLocalStorage();
         };
         return AWProxy;
     }());
@@ -339,16 +438,11 @@
         AWAuth.prototype.gateway = function (successHandler, errorHandler) {
             AWProxy.exec(successHandler, errorHandler, 'AWAuth', 'gateway', []);
         };
+        AWAuth.prototype.online = function (successHandler, errorHandler) {
+            AWProxy.exec(successHandler, errorHandler, 'AWAuth', 'online', []);
+        };
         return AWAuth;
     }(AWPlugin));
-
-    var Util = (function () {
-        function Util() {
-        }
-        Util.noop = function () {
-        };
-        return Util;
-    }());
 
     var AWCache$1 = (function (_super) {
         __extends(AWCache, _super);
@@ -360,25 +454,25 @@
             }
         }
         AWCache.prototype.setItem = function (key, value) {
-            var result = window.localStorage.setItem(key, value);
+            var result = AWProxy.storage().setItem(key, value);
             if (this.options.usePersistentStorage) {
                 this.writeLocalStorageDataToPersistentStorage();
             }
             return result;
         };
         AWCache.prototype.getItem = function (key) {
-            var result = window.localStorage.getItem(key);
+            var result = AWProxy.storage().getItem(key);
             return result;
         };
         AWCache.prototype.removeItem = function (key) {
-            var result = window.localStorage.removeItem(key);
+            var result = AWProxy.storage().removeItem(key);
             if (this.options.usePersistentStorage) {
                 this.writeLocalStorageDataToPersistentStorage();
             }
             return result;
         };
         AWCache.prototype.clear = function () {
-            var result = window.localStorage.clear();
+            var result = AWProxy.storage().clear();
             if (this.options.usePersistentStorage) {
                 this.writeLocalStorageDataToPersistentStorage();
             }
@@ -415,9 +509,9 @@
         };
         AWCache.prototype.writeLocalStorageDataToPersistentStorage = function () {
             var i, data = {}, key, value;
-            for (i = 0; i < window.localStorage.length; i += 1) {
-                key = window.localStorage.key(i);
-                value = window.localStorage.getItem(key);
+            for (i = 0; i < AWProxy.storage().length; i += 1) {
+                key = AWProxy.storage().key(i);
+                value = AWProxy.storage().getItem(key);
                 data[key] = value;
             }
             this.writeDataToPersistentStorage(JSON.stringify(data));
@@ -468,21 +562,21 @@
         AWCamera.prototype.openGallery = function (options) {
             var _this = this;
             options = options || {
-                    destinationType: Camera.DestinationType.FILE_URI
+                    destinationType: AWProxy.Camera().DestinationType.FILE_URI
                 };
-            options.sourceType = Camera.PictureSourceType.PHOTOLIBRARY;
+            options.sourceType = AWProxy.Camera().PictureSourceType.PHOTOLIBRARY;
             return this.getPicture((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), options);
         };
         AWCamera.prototype.takePicture = function (options) {
             var _this = this;
             options = options || {
-                    destinationType: Camera.DestinationType.FILE_URI,
-                    encodingType: Camera.EncodingType.JPEG,
-                    mediaType: Camera.MediaType.ALLMEDIA,
+                    destinationType: AWProxy.Camera().DestinationType.FILE_URI,
+                    encodingType: AWProxy.Camera().EncodingType.JPEG,
+                    mediaType: AWProxy.Camera().MediaType.ALLMEDIA,
                     correctOrientation: true,
                     saveToPhotoAlbum: true
                 };
-            options.sourceType = Camera.PictureSourceType.CAMERA;
+            options.sourceType = AWProxy.Camera().PictureSourceType.CAMERA;
             return this.getPicture((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), options);
         };
         return AWCamera;
@@ -556,6 +650,7 @@
             this.uuid = AWProxy.device().uuid;
             this.version = AWProxy.device().version;
             this.manufacturer = AWProxy.device().manufacturer;
+            this.capture = AWProxy.device().capture;
         }
         return AWDevice;
     }(AWPlugin));
@@ -580,7 +675,7 @@
         __extends(AWFileTransfer, _super);
         function AWFileTransfer(successHandler, errorHandler) {
             _super.call(this, successHandler, errorHandler);
-            this.fileTransfer = new FileTransfer();
+            this.fileTransfer = AWProxy.filetransfer();
             this.onprogress = null;
         }
         AWFileTransfer.prototype.abort = function () {
@@ -638,6 +733,10 @@
         AWFinder.prototype.list = function (path) {
             var _this = this;
             AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWFinder', 'list', [path]);
+        };
+        AWFinder.prototype.filePathToData = function (path) {
+            var _this = this;
+            AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWFinder', 'filePathToData', [path]);
         };
         AWFinder.prototype.openDirect = function (filename) {
             var _this = this;
@@ -832,6 +931,9 @@
         AWNotificationManager.prototype.didTapNotificationFromActivityView = function (handler, errorHandler) {
             this.openListener(handler, errorHandler);
         };
+        AWNotificationManager.prototype.removeNotification = function (seqNo, handler, errorHandler) {
+            AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'removeNotification', [seqNo]);
+        };
         AWNotificationManager.prototype.alert = function (message, alertCallback, title, buttonName) {
             AWProxy.notification().alert(message, alertCallback, title, buttonName);
         };
@@ -852,10 +954,11 @@
         function AWOfflineManager(options) {
             _super.call(this, Util.noop, Util.noop);
             var _this = this;
-            var queue;
+            var queue, document;
             this.cacheKey = '__appworksjs.deferredQueue';
             this.cache = new AWCache$1();
             this.options = options || { preserveEvents: false };
+            document = AWProxy.document();
             // process deferred queue when network status changes
             document.addEventListener('online', function () {
                 _this.processDeferredQueue();
