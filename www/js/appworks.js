@@ -195,13 +195,15 @@ var MockFileTransfer = (function () {
     return MockFileTransfer;
 }());
 
-var Util = (function () {
-    function Util() {
-    }
-    Util.noop = function () {
-    };
-    return Util;
-}());
+/**
+ * Collection of utility functions
+ */
+function noop() {
+}
+function isFunction(functionToCheck) {
+    var getType = {};
+    return functionToCheck && getType.toString.call(functionToCheck) === '[object Function]';
+}
 
 var MockLocalStorage = (function () {
     // allow tests to set a value if they need to
@@ -277,7 +279,7 @@ var es6Promise = createCommonjsModule(function (module, exports) {
  * @copyright Copyright (c) 2014 Yehuda Katz, Tom Dale, Stefan Penner and contributors (Conversion to ES6 API by Jake Archibald)
  * @license   Licensed under MIT license
  *            See https://raw.githubusercontent.com/stefanpenner/es6-promise/master/LICENSE
- * @version   4.1.0
+ * @version   4.0.5
  */
 
 (function (global, factory) {
@@ -583,7 +585,6 @@ function handleMaybeThenable(promise, maybeThenable, then$$) {
   } else {
     if (then$$ === GET_THEN_ERROR) {
       _reject(promise, GET_THEN_ERROR.error);
-      GET_THEN_ERROR.error = null;
     } else if (then$$ === undefined) {
       fulfill(promise, maybeThenable);
     } else if (isFunction(then$$)) {
@@ -704,7 +705,7 @@ function invokeCallback(settled, promise, callback, detail) {
     if (value === TRY_CATCH_ERROR) {
       failed = true;
       error = value.error;
-      value.error = null;
+      value = null;
     } else {
       succeeded = true;
     }
@@ -1581,44 +1582,49 @@ var DesktopWebview = (function () {
         this.id = DesktopWebviewSequenceStore.seqNo++;
     }
     DesktopWebview.prototype.addEventListener = function (type, callback) {
-        AWProxy.exec(Util.noop, Util.noop, 'AWWebView', 'addEventListener', [this.id, type, callback]);
+        AWProxy.exec(noop, noop, 'AWWebView', 'addEventListener', [this.id, type, callback]);
     };
     DesktopWebview.prototype.removeEventListener = function (type, callback) {
-        AWProxy.exec(Util.noop, Util.noop, 'AWWebView', 'removeEventListener', [this.id, type, callback]);
+        AWProxy.exec(noop, noop, 'AWWebView', 'removeEventListener', [this.id, type, callback]);
     };
     DesktopWebview.prototype.close = function () {
-        AWProxy.exec(Util.noop, Util.noop, 'AWWebView', 'close', [this.id]);
+        AWProxy.exec(noop, noop, 'AWWebView', 'close', [this.id]);
     };
     DesktopWebview.prototype.show = function () {
-        AWProxy.exec(Util.noop, Util.noop, 'AWWebView', 'show', [this.id]);
+        AWProxy.exec(noop, noop, 'AWWebView', 'show', [this.id]);
     };
     DesktopWebview.prototype.open = function (url, target, options) {
-        AWProxy.exec(Util.noop, Util.noop, 'AWWebView', 'open', [this.id, url, target, options]);
+        AWProxy.exec(noop, noop, 'AWWebView', 'open', [this.id, url, target, options]);
         return this;
     };
     DesktopWebview.prototype.executeScript = function (script, callback) {
-        AWProxy.exec(callback, Util.noop, 'AWWebView', 'executeScript', [this.id, script]);
+        AWProxy.exec(callback, noop, 'AWWebView', 'executeScript', [this.id, script]);
     };
     DesktopWebview.prototype.insertCSS = function (css, callback) {
-        AWProxy.exec(callback, Util.noop, 'AWWebView', 'insertCSS', [this.id, css]);
+        AWProxy.exec(callback, noop, 'AWWebView', 'insertCSS', [this.id, css]);
     };
     return DesktopWebview;
 }());
 
+var callbackQueue = [];
+var deviceReady = false;
+setupDeviceInitializationForMobile();
 var AWProxy = (function () {
     function AWProxy() {
     }
     AWProxy.exec = function (successHandler, errorHandler, name, method, args) {
-        if (typeof cordova !== 'undefined') {
-            cordova.exec(successHandler, errorHandler, name, method, args);
+        try {
+            if (AWProxy.isDesktopEnv()) {
+                AWProxy.execDesktop(successHandler, errorHandler, name, method, args);
+            }
+            else {
+                AWProxy.execMobile(successHandler, errorHandler, name, method, args);
+            }
         }
-        else if (AWProxy.isDesktopEnv()) {
-            __aw_plugin_proxy.exec(successHandler, errorHandler, name, method, args);
-        }
-        else {
-            console.error('No proxy objects defined - tried [Cordova, __aw_plugin_proxy]');
-            if (typeof errorHandler === 'function') {
-                errorHandler('No proxy objects defined - tried [Cordova, __aw_plugin_proxy]');
+        catch (err) {
+            console.error('No proxy objects defined - tried [cordova, __aw_plugin_proxy]', err);
+            if (isFunction(errorHandler)) {
+                errorHandler(err);
             }
         }
     };
@@ -1707,7 +1713,7 @@ var AWProxy = (function () {
     };
     AWProxy.document = function () {
         return (typeof document !== 'undefined') ? document : {
-            addEventListener: Util.noop
+            addEventListener: noop
         };
     };
     AWProxy.file = function () {
@@ -1810,8 +1816,34 @@ var AWProxy = (function () {
         // the proxy exposed by desktop has a method to allow retrieval of plugin instances
         return __aw_plugin_proxy.getPlugin(pluginName);
     };
+    AWProxy.execMobile = function (successHandler, errorHandler, name, method, args) {
+        if (deviceReady) {
+            cordova.exec(successHandler, errorHandler, name, method, args);
+        }
+        else {
+            callbackQueue.push(function () {
+                AWProxy.exec(successHandler, errorHandler, name, method, args);
+            });
+        }
+    };
+    AWProxy.execDesktop = function (successHandler, errorHandler, name, method, args) {
+        __aw_plugin_proxy.exec(successHandler, errorHandler, name, method, args);
+    };
     return AWProxy;
 }());
+function setupDeviceInitializationForMobile() {
+    try {
+        document.addEventListener('deviceready', function () {
+            deviceReady = true;
+            callbackQueue.forEach(function (callback) {
+                callback();
+            });
+        });
+    }
+    catch (e) {
+        // unsupported environment
+    }
+}
 
 var AWAccelerometer$1 = (function (_super) {
     __extends(AWAccelerometer, _super);
@@ -1854,6 +1886,10 @@ var AWAuth$1 = (function (_super) {
         force = !!force;
         AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWAuth', 'authenticate', [force.toString()]);
     };
+    /**
+     *  Marked for depreciation
+     *  Use authenticate(boolean?), which will get the auth object if the session is valid, else it will refresh the auth object and return that.
+     */
     AWAuth.prototype.getAuthResponse = function () {
         var _this = this;
         AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWAuth', 'authobject', []);
@@ -1864,13 +1900,16 @@ var AWAuth$1 = (function (_super) {
     AWAuth.prototype.online = function (successHandler, errorHandler) {
         AWProxy.exec(successHandler, errorHandler, 'AWAuth', 'online', []);
     };
+    AWAuth.prototype.otdsssoticket = function (successHandler, errorHandler) {
+        AWProxy.exec(successHandler, errorHandler, 'AWAuth', 'otdsssoticket', []);
+    };
     return AWAuth;
 }(AWPlugin));
 
 var AWCache$1 = (function (_super) {
     __extends(AWCache, _super);
     function AWCache(options) {
-        var _this = _super.call(this, Util.noop, Util.noop) || this;
+        var _this = _super.call(this, noop, noop) || this;
         _this.options = options || { usePersistentStorage: false };
         _this.preloadCache();
         return _this;
@@ -1930,6 +1969,194 @@ var AWCache$1 = (function (_super) {
         return this.options.usePersistentStorage;
     };
     return AWCache;
+}(AWPlugin));
+
+var AWCalendar$1 = (function (_super) {
+    __extends(AWCalendar, _super);
+    function AWCalendar() {
+        return _super.call(this, noop, noop) || this;
+    }
+    AWCalendar.getCalendarOptions = function () {
+        return {
+            firstReminderMinutes: 60,
+            secondReminderMinutes: null,
+            recurrence: null,
+            recurrenceInterval: 1,
+            recurrenceWeekstart: "MO",
+            recurrenceByDay: null,
+            recurrenceByMonthDay: null,
+            recurrenceEndDate: null,
+            recurrenceCount: null,
+            calendarName: null,
+            calendarId: null,
+            url: null
+        };
+    };
+    AWCalendar.prototype.hasReadPermission = function (successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'hasReadPermission', []);
+        });
+    };
+    AWCalendar.prototype.requestReadPermission = function (successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'requestReadPermission', []);
+        });
+    };
+    AWCalendar.prototype.hasWritePermission = function (successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'hasWritePermission', []);
+        });
+    };
+    AWCalendar.prototype.requestWritePermission = function (successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'requestWritePermission', []);
+        });
+    };
+    AWCalendar.prototype.hasReadWritePermission = function (successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'hasReadWritePermission', []);
+        });
+    };
+    AWCalendar.prototype.requestReadWritePermission = function (successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'requestReadWritePermission', []);
+        });
+    };
+    AWCalendar.prototype.createCalendar = function (options, successHandler, errorHandler) {
+        if (options === void 0) { options = {
+            calendarName: null,
+            calendarColor: null
+        }; }
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'createCalendar', [options]);
+        });
+    };
+    AWCalendar.prototype.deleteCalendar = function (calendarName, successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'deleteCalendar', [{ calendarName: calendarName }]);
+        });
+    };
+    AWCalendar.prototype.openCalendar = function (date, successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'openCalendar', [{ date: date.getTime() }]);
+        });
+    };
+    AWCalendar.prototype.createEventWithOptions = function (title, location, notes, startDate, endDate, options, successHandler, errorHandler) {
+        if (options === void 0) { options = AWCalendar.getCalendarOptions(); }
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'createEventWithOptions', [{
+                    title: title,
+                    location: location,
+                    notes: notes,
+                    startTime: startDate.getTime(),
+                    endTime: endDate.getTime(),
+                    options: options
+                }]);
+        });
+    };
+    AWCalendar.prototype.createEvent = function (title, location, notes, startDate, endDate, successHandler, errorHandler) {
+        return this.createEventWithOptions(title, location, notes, startDate, endDate, AWCalendar.getCalendarOptions(), successHandler, errorHandler);
+    };
+    AWCalendar.prototype.createEventInteractivelyWithOptions = function (title, location, notes, startDate, endDate, options, successHandler, errorHandler) {
+        if (options === void 0) { options = AWCalendar.getCalendarOptions(); }
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'createEventInteractively', [{
+                    title: title,
+                    location: location,
+                    notes: notes,
+                    startTime: startDate.getTime(),
+                    endTime: endDate.getTime(),
+                    options: options
+                }]);
+        });
+    };
+    AWCalendar.prototype.createEventInteractively = function (title, location, notes, startDate, endDate, successHandler, errorHandler) {
+        return this.createEventInteractivelyWithOptions(title, location, notes, startDate, endDate, AWCalendar.getCalendarOptions(), successHandler, errorHandler);
+    };
+    AWCalendar.prototype.findEventWithOptions = function (title, location, notes, startDate, endDate, options, successHandler, errorHandler) {
+        if (options === void 0) { options = AWCalendar.getCalendarOptions(); }
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'findEventWithOptions', [{
+                    title: title,
+                    location: location,
+                    notes: notes,
+                    startTime: startDate.getTime(),
+                    endTime: endDate.getTime(),
+                    options: options
+                }]);
+        });
+    };
+    AWCalendar.prototype.findEvent = function (title, location, notes, startDate, endDate, successHandler, errorHandler) {
+        return this.findEventWithOptions(title, location, notes, startDate, endDate, AWCalendar.getCalendarOptions(), successHandler, errorHandler);
+    };
+    AWCalendar.prototype.findAllEventsInNamedCalendar = function (calendarName, successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'findAllEventsInNamedCalendar', [{ calendarName: calendarName }]);
+        });
+    };
+    AWCalendar.prototype.deleteEvent = function (title, location, notes, startDate, endDate, successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'deleteEvent', [{
+                    title: title,
+                    location: location,
+                    startTime: startDate.getTime(),
+                    endTime: endDate.getTime(),
+                }]);
+        });
+    };
+    AWCalendar.prototype.deleteEventFromNamedCalendar = function (title, location, notes, startDate, endDate, calendarName, successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'deleteEventFromNamedCalendar', [{
+                    title: title,
+                    location: location,
+                    startTime: startDate.getTime(),
+                    endTime: endDate.getTime(),
+                    calendarName: calendarName
+                }]);
+        });
+    };
+    AWCalendar.prototype.modifyEventWithOptions = function (title, location, notes, startDate, endDate, newTitle, newLocation, newNotes, newStartDate, newEndDate, options, newOptions, successHandler, errorHandler) {
+        if (options === void 0) { options = AWCalendar.getCalendarOptions(); }
+        if (newOptions === void 0) { newOptions = AWCalendar.getCalendarOptions(); }
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'modifyEventWithOptions', [{
+                    title: title,
+                    location: location,
+                    notes: notes,
+                    startTime: startDate.getTime(),
+                    endTime: endDate.getTime(),
+                    newTitle: newTitle,
+                    newLocation: newLocation,
+                    newNotes: newNotes,
+                    newStartTime: newStartDate.getTime(),
+                    newEndDate: newEndDate.getTime(),
+                    options: options,
+                    newOptions: newOptions
+                }]);
+        });
+    };
+    AWCalendar.prototype.modifyEvent = function (title, location, notes, startDate, endDate, newTitle, newLocation, newNotes, newStartDate, newEndDate, successHandler, errorHandler) {
+        return this.modifyEventWithOptions(title, location, notes, startDate, endDate, newTitle, newLocation, newNotes, newStartDate, newEndDate, AWCalendar.getCalendarOptions(), AWCalendar.getCalendarOptions(), successHandler, errorHandler);
+    };
+    AWCalendar.prototype.modifyEventInNamedCalendar = function (title, location, notes, startDate, endDate, newTitle, newLocation, newNotes, newStartDate, newEndDate, calendarName, successHandler, errorHandler) {
+        var options = AWCalendar.getCalendarOptions();
+        options.calendarName = calendarName;
+        return this.modifyEventWithOptions(title, location, notes, startDate, endDate, newTitle, newLocation, newNotes, newStartDate, newEndDate, options, successHandler, errorHandler);
+    };
+    AWCalendar.prototype.listCalendars = function (successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'listCalendars', []);
+        });
+    };
+    AWCalendar.prototype.listEventsInRange = function (startDate, endDate, successHandler, errorHandler) {
+        return new es6Promise_1(function (resolve, reject) {
+            AWProxy.exec(successHandler || resolve, errorHandler || reject, 'AWCalendar', 'listEventsInRange', [{
+                    startTime: startDate.getTime(),
+                    endTime: endDate.getTime()
+                }]);
+        });
+    };
+    return AWCalendar;
 }(AWPlugin));
 
 var AWCamera$1 = (function (_super) {
@@ -2123,6 +2350,10 @@ var AWFinder$1 = (function (_super) {
         var _this = this;
         AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWFinder', 'list', [path]);
     };
+    AWFinder.prototype.share = function (filename) {
+        var _this = this;
+        AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWFinder', 'share', [filename]);
+    };
     AWFinder.prototype.openDirect = function (filename) {
         var _this = this;
         AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWFinder', 'openDirect', [filename]);
@@ -2130,11 +2361,30 @@ var AWFinder$1 = (function (_super) {
     return AWFinder;
 }(AWPlugin));
 
+var AWGlobalization$1 = (function (_super) {
+    __extends(AWGlobalization, _super);
+    function AWGlobalization() {
+        return _super.call(this, noop, noop) || this;
+    }
+    AWGlobalization.prototype.getPreferredLanguage = function (successFn, errorFn) {
+        AWProxy.exec(successFn, errorFn, 'AWGlobalization', 'getPreferredLanguage', []);
+    };
+    return AWGlobalization;
+}(AWPlugin));
+
 var AWHeaderBar$1 = (function (_super) {
     __extends(AWHeaderBar, _super);
     function AWHeaderBar() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
+        /**
+         * @deprecated
+         * @type {{LeftOne: number; LeftTwo: number; RightOne: number; RightTwo: number}}
+         */
         _this.ButtonName = { LeftOne: 0, LeftTwo: 1, RightOne: 2, RightTwo: 3 };
+        /**
+         * @deprecated
+         * @type {{Hamburger: number; Back: number; Settings: number; Appmenu: number; None: number; Dots: number; Search: number}}
+         */
         _this.ButtonImage = { Hamburger: 0, Back: 1, Settings: 2, Appmenu: 3, None: 5, Dots: 6, Search: 7 };
         return _this;
     }
@@ -2163,6 +2413,8 @@ var AWHeaderBar$1 = (function (_super) {
     };
     return AWHeaderBar;
 }(AWPlugin));
+AWHeaderBar$1.ButtonName = { LeftOne: 0, LeftTwo: 1, RightOne: 2, RightTwo: 3 };
+AWHeaderBar$1.ButtonImage = { Hamburger: 0, Back: 1, Settings: 2, Appmenu: 3, None: 5, Dots: 6, Search: 7 };
 // alias
 var AWHeader$1 = (function (_super) {
     __extends(AWHeader, _super);
@@ -2175,7 +2427,7 @@ var AWHeader$1 = (function (_super) {
 var AWKeyboard$1 = (function (_super) {
     __extends(AWKeyboard, _super);
     function AWKeyboard() {
-        return _super.call(this, Util.noop, Util.noop) || this;
+        return _super.call(this, noop, noop) || this;
     }
     AWKeyboard.prototype.hideKeyboardAccessoryBar = function (hide) {
         var _this = this;
@@ -2200,7 +2452,7 @@ var AWKeyboard$1 = (function (_super) {
 var AWLauncher$1 = (function (_super) {
     __extends(AWLauncher, _super);
     function AWLauncher(successHandler, errorHandler) {
-        return _super.call(this, successHandler || Util.noop, errorHandler || Util.noop) || this;
+        return _super.call(this, successHandler || noop, errorHandler || noop) || this;
     }
     AWLauncher.prototype.getLaunchURL = function (successHandler, errorHandler) {
         AWProxy.exec(successHandler, errorHandler, 'AWLauncher', 'getLaunchURL', []);
@@ -2321,37 +2573,106 @@ var AWMenu$1 = (function (_super) {
         var _this = this;
         AWProxy.exec(listener, (function () { return _this.errorHandler; })(), 'AWMenu', 'receive', []);
     };
+    AWMenu.prototype.showMenu = function (shouldShowMenu) {
+        var _this = this;
+        AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWMenu', 'showMenu', [shouldShowMenu]);
+    };
     AWMenu.prototype.didTapMenuItem = function (listener) {
         return this.openListener(listener);
     };
     return AWMenu;
 }(AWPlugin));
 
+var AWMobileFileSystem$1 = (function (_super) {
+    __extends(AWMobileFileSystem, _super);
+    function AWMobileFileSystem() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    // File listing
+    AWMobileFileSystem.prototype.list = function (directory, shared, success, error) {
+        var args = [directory, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'list', args);
+    };
+    // Imports
+    AWMobileFileSystem.prototype.listImports = function (success, error) {
+        var args = [];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'listImports', args);
+    };
+    AWMobileFileSystem.prototype.moveImport = function (source, destination, desintationShared, success, error) {
+        var args = [source, destination, desintationShared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'moveImport', args);
+    };
+    // File IO
+    AWMobileFileSystem.prototype.exists = function (source, shared, success, error) {
+        var args = [source, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'exists', args);
+    };
+    AWMobileFileSystem.prototype.rename = function (source, destination, shared, success, error) {
+        var args = [source, destination, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'rename', args);
+    };
+    AWMobileFileSystem.prototype.copy = function (source, sourceShared, destination, destinationShared, success, error) {
+        var args = [source, sourceShared, destination, destinationShared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'copy', args);
+    };
+    AWMobileFileSystem.prototype.move = function (source, sourceShared, destination, destinationShared, success, error) {
+        var args = [source, sourceShared, destination, destinationShared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'move', args);
+    };
+    AWMobileFileSystem.prototype.remove = function (source, shared, success, error) {
+        var args = [source, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'remove', args);
+    };
+    // File sharing
+    AWMobileFileSystem.prototype.open = function (source, shared, success, error) {
+        var args = [source, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'open', args);
+    };
+    AWMobileFileSystem.prototype.share = function (source, shared, success, error) {
+        var args = [source, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'share', args);
+    };
+    AWMobileFileSystem.prototype.quicklook = function (source, shared, success, error) {
+        var args = [source, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'quicklook', args);
+    };
+    // File transfer
+    AWMobileFileSystem.prototype.download = function (source, destination, headers, shared, success, error) {
+        var args = [source, destination, headers, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'download', args);
+    };
+    AWMobileFileSystem.prototype.upload = function (source, destination, fileParameterName, formData, headers, shared, success, error) {
+        var args = [source, destination, fileParameterName, formData, headers, shared];
+        AWProxy.exec(success, error, 'AWMobileFileSystem', 'upload', args);
+    };
+    return AWMobileFileSystem;
+}(AWPlugin));
+
 var AWNotificationManager$1 = (function (_super) {
     __extends(AWNotificationManager, _super);
     function AWNotificationManager() {
-        return _super.call(this, Util.noop, Util.noop) || this;
+        return _super.call(this, noop, noop) || this;
     }
-    AWNotificationManager.prototype.enablePushNotifications = function (handler, errorHandler) {
-        AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'enablePushNotifications', AWProxy.isDesktopEnv() ? [handler] : []);
+    AWNotificationManager.prototype.enablePushNotifications = function (handler, errorHandler, includeSeqNo) {
+        AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'enablePushNotifications', AWProxy.isDesktopEnv() ? [handler, includeSeqNo] : [includeSeqNo]);
     };
     AWNotificationManager.prototype.disablePushNotifications = function () {
         AWProxy.exec(null, null, 'AWNotificationManager', 'disablePushNotifications', []);
     };
-    AWNotificationManager.prototype.getNotifications = function (handler, errorHandler) {
-        AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'getPushNotifications', []);
+    AWNotificationManager.prototype.getNotifications = function (handler, errorHandler, includeSeqNo) {
+        AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'getPushNotifications', [includeSeqNo]);
     };
-    AWNotificationManager.prototype.getOpeningNotification = function (handler, errorHandler) {
-        AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'getOpeningNotification', []);
+    AWNotificationManager.prototype.getOpeningNotification = function (handler, errorHandler, includeSeqNo) {
+        AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'getOpeningNotification', [includeSeqNo]);
     };
-    AWNotificationManager.prototype.notificationDidLaunchApp = function (handler, errorHandler) {
-        this.getOpeningNotification(handler, errorHandler);
+    AWNotificationManager.prototype.notificationDidLaunchApp = function (handler, errorHandler, includeSeqNo) {
+        this.getOpeningNotification(handler, errorHandler, includeSeqNo);
     };
-    AWNotificationManager.prototype.openListener = function (handler, errorHandler) {
-        AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'openListener', AWProxy.isDesktopEnv() ? [handler] : []);
+    AWNotificationManager.prototype.openListener = function (handler, errorHandler, includeSeqNo) {
+        AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'openListener', AWProxy.isDesktopEnv() ? [handler, includeSeqNo] : [includeSeqNo]);
     };
-    AWNotificationManager.prototype.didTapNotificationFromActivityView = function (handler, errorHandler) {
-        this.openListener(handler, errorHandler);
+    AWNotificationManager.prototype.didTapNotificationFromActivityView = function (handler, errorHandler, includeSeqNo) {
+        this.openListener(handler, errorHandler, includeSeqNo);
     };
     AWNotificationManager.prototype.removeNotification = function (seqNo, handler, errorHandler) {
         AWProxy.exec(handler, errorHandler, 'AWNotificationManager', 'removeNotification', [seqNo]);
@@ -2374,7 +2695,7 @@ var AWNotificationManager$1 = (function (_super) {
 var AWOfflineManager$1 = (function (_super) {
     __extends(AWOfflineManager, _super);
     function AWOfflineManager(options) {
-        var _this = _super.call(this, Util.noop, Util.noop) || this;
+        var _this = _super.call(this, noop, noop) || this;
         var document;
         _this.cacheKey = '__appworksjs.deferredQueue';
         _this.cache = new AWCache$1();
@@ -2450,21 +2771,27 @@ var AWPage$1 = (function (_super) {
         var _this = this;
         AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWPage', 'setPageUrl', [url]);
     };
-    AWPage.prototype.openModalAppWebView = function (url, title) {
+    AWPage.prototype.openModalAppWebView = function (url, title, closeTitle) {
         var _this = this;
-        AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWPage', 'showModalAppWebView', [url, title]);
+        AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWPage', 'showModalAppWebView', [url, title, closeTitle]);
     };
-    AWPage.prototype.openModalExternalWebView = function (url, title) {
+    AWPage.prototype.openModalExternalWebView = function (url, title, closeTitle, options) {
         var _this = this;
-        AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWPage', 'showModalExternalWebView', [url, title]);
+        if (typeof options === 'undefined' || !options) {
+            options = {};
+        }
+        AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWPage', 'showModalExternalWebView', [url, title, closeTitle, options]);
     };
-    AWPage.prototype.setActionButtonCallback = function (callback) {
+    AWPage.prototype.setActionButtonCallback = function (callback, actionTitle) {
         var _this = this;
-        AWProxy.exec(callback, (function () { return _this.errorHandler; })(), 'AWPage', 'setModalAppWebViewActionCallback', []);
+        AWProxy.exec(callback, (function () { return _this.errorHandler; })(), 'AWPage', 'setModalAppWebViewActionCallback', [actionTitle]);
     };
     AWPage.prototype.closeModalAppWebView = function () {
         var _this = this;
         AWProxy.exec((function () { return _this.successHandler; })(), (function () { return _this.errorHandler; })(), 'AWPage', 'closeModalAppWebView', []);
+    };
+    AWPage.prototype.video = function (success, error, url) {
+        AWProxy.exec(success, error, 'AWPage', 'video', [url]);
     };
     return AWPage;
 }(AWPlugin));
@@ -2571,7 +2898,7 @@ var AWSecureStorage$1 = (function (_super) {
 var AWVibration$1 = (function (_super) {
     __extends(AWVibration, _super);
     function AWVibration() {
-        return _super.call(this, Util.noop, Util.noop) || this;
+        return _super.call(this, noop, noop) || this;
     }
     AWVibration.prototype.vibrate = function (time) {
         return AWProxy.vibrate(time);
@@ -2582,7 +2909,7 @@ var AWVibration$1 = (function (_super) {
 var AWWebView$1 = (function (_super) {
     __extends(AWWebView, _super);
     function AWWebView() {
-        return _super.call(this, Util.noop, Util.noop) || this;
+        return _super.call(this, noop, noop) || this;
     }
     AWWebView.prototype.open = function (url, target, options) {
         return AWProxy.webview().open(url, target, options);
@@ -2611,7 +2938,7 @@ var AWWebView$1 = (function (_super) {
 var AWFileSystem$1 = (function (_super) {
     __extends(AWFileSystem, _super);
     function AWFileSystem() {
-        var _this = _super.call(this, Util.noop, Util.noop) || this;
+        var _this = _super.call(this, noop, noop) || this;
         _this.desktopEnvError = new Error('This method is only available in the AppWorks Desktop environment');
         return _this;
     }
@@ -2627,9 +2954,13 @@ var AWFileSystem$1 = (function (_super) {
         this.validateEnv();
         AWProxy.exec(successCallback, errorCallback, 'AWFileSystem', 'isDir', [path]);
     };
-    AWFileSystem.prototype.createFile = function (path, successCallback, errorCallback) {
+    AWFileSystem.prototype.createFile = function (path, successCallback, errorCallback, data, append) {
         this.validateEnv();
-        AWProxy.exec(successCallback, errorCallback, 'AWFileSystem', 'createFile', [path]);
+        AWProxy.exec(successCallback, errorCallback, 'AWFileSystem', 'createFile', [path, data, append]);
+    };
+    AWFileSystem.prototype.readFile = function (path, successCallback, errorCallback) {
+        this.validateEnv();
+        AWProxy.exec(successCallback, errorCallback, 'AWFileSystem', 'readFile', [path]);
     };
     AWFileSystem.prototype.createDirectory = function (path, successCallback, errorCallback) {
         this.validateEnv();
@@ -2691,6 +3022,9 @@ var AWAuth$$1 = AWAuth$1;
 // Cache plugin and alias -- [desktop/mobile]
 var Cache = AWCache$1;
 var AWCache$$1 = AWCache$1;
+// Calendar plugin and alias -- [desktop/mobile]
+var Calendar = AWCalendar$1;
+var AWCalendar$$1 = AWCalendar$1;
 // Camera plugin and alias -- [mobile]
 var Camera$1 = AWCamera$1;
 var AWCamera$$1 = AWCamera$1;
@@ -2715,6 +3049,9 @@ var AWFileTransfer$$1 = AWFileTransfer$1;
 // Finder plugin and alias -- [mobile]
 var Finder = AWFinder$1;
 var AWFinder$$1 = AWFinder$1;
+// Globalization plugin and alias -- [mobile]
+var Globalization = AWGlobalization$1;
+var AWGlobalization$$1 = AWGlobalization$1;
 // Header plugin and alias -- [mobile]
 var HeaderBar = AWHeaderBar$1;
 var Header = AWHeaderBar$1;
@@ -2740,6 +3077,9 @@ var Menu = AWMenu$1;
 var AWMenu$$1 = AWMenu$1;
 var AWHamburgerMenu = AWMenu$1;
 var HamburgerMenu = AWMenu$1;
+// MobileFileSystem plugin and alias -- [mobile]
+var MobileFileSystem = AWMobileFileSystem$1;
+var AWMobileFileSystem$$1 = AWMobileFileSystem$1;
 // NotificationManager plugin and alias -- [mobile]
 var NotificationManager = AWNotificationManager$1;
 var AWNotificationManager$$1 = AWNotificationManager$1;
@@ -2775,6 +3115,8 @@ exports.Auth = Auth;
 exports.AWAuth = AWAuth$$1;
 exports.Cache = Cache;
 exports.AWCache = AWCache$$1;
+exports.Calendar = Calendar;
+exports.AWCalendar = AWCalendar$$1;
 exports.Camera = Camera$1;
 exports.AWCamera = AWCamera$$1;
 exports.Compass = Compass;
@@ -2791,6 +3133,8 @@ exports.FileTransfer = FileTransfer$1;
 exports.AWFileTransfer = AWFileTransfer$$1;
 exports.Finder = Finder;
 exports.AWFinder = AWFinder$$1;
+exports.Globalization = Globalization;
+exports.AWGlobalization = AWGlobalization$$1;
 exports.HeaderBar = HeaderBar;
 exports.Header = Header;
 exports.AWHeader = AWHeader$$1;
@@ -2809,6 +3153,8 @@ exports.Menu = Menu;
 exports.AWMenu = AWMenu$$1;
 exports.AWHamburgerMenu = AWHamburgerMenu;
 exports.HamburgerMenu = HamburgerMenu;
+exports.MobileFileSystem = MobileFileSystem;
+exports.AWMobileFileSystem = AWMobileFileSystem$$1;
 exports.NotificationManager = NotificationManager;
 exports.AWNotificationManager = AWNotificationManager$$1;
 exports.OfflineManager = OfflineManager;
